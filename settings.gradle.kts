@@ -21,3 +21,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "Bingo"
 include(":app")
+include(":core:model")
+include(":data:cards:repository")
+include(":data:cards:datasource")
+include(":domain:game:usecase")
+include(":feature:game")
+include(":data:game:datasource")
+include(":data:game:repository")
+include(":domain:cards:usecase")
+include(":feature:cards")
