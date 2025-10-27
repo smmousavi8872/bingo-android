@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.cards)
+    implementation(projects.feature.game)
+
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.androidx.ui)
     implementation(libs.bundles.di.koin)
