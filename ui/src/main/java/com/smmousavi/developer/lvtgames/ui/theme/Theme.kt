@@ -1,6 +1,5 @@
-package com.smmousavi.developer.lvtgames.bingo.ui.theme
+package com.smmousavi.developer.lvtgames.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

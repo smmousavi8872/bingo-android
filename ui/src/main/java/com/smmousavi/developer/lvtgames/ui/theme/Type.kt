@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.bingo.ui.theme
+package com.smmousavi.developer.lvtgames.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
