@@ -1,7 +1,6 @@
-package com.smmousavi.developer.lvtgames.domain.cards.usecase
+package com.smmousavi.developer.lvtgames.domain.cards.uimodel
 
 import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
-import com.smmousavi.developer.lvtgames.domain.cards.uimodel.CardsUiModel
 
 fun CardsModel.asUiModel(): CardsUiModel = CardsUiModel(
     cards = cards.map { c ->
