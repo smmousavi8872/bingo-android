@@ -49,6 +49,7 @@ dependencies {
     implementation(projects.data.cards.datasource)
     implementation(projects.data.cards.repository)
     implementation(projects.domain.cards.usecase)
+    implementation(projects.feature.cards)
     implementation(projects.ui)
 
     implementation(libs.bundles.androidx.core)
