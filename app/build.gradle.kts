@@ -46,6 +46,10 @@ android {
 dependencies {
     implementation(projects.core.network)
     implementation(projects.core.database)
+    implementation(projects.data.cards.datasource)
+    implementation(projects.data.cards.repository)
+    implementation(projects.domain.cards.usecase)
+    implementation(projects.ui)
 
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.androidx.ui)

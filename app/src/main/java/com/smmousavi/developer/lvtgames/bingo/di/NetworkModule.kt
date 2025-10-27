@@ -26,7 +26,9 @@ val networkModule = module {
             .readTimeout(20, TimeUnit.SECONDS)
             .apply {
                 addInterceptor(
-                    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+                    HttpLoggingInterceptor().setLevel(
+                        HttpLoggingInterceptor.Level.BASIC
+                    )
                 )
             }
             .build()
@@ -36,7 +38,11 @@ val networkModule = module {
         val baseUrl = get<String>(named("BASE_URL")) // provided in app module
         Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(
+                get<Json>().asConverterFactory(
+                    "application/json".toMediaType()
+                )
+            )
             .client(get())
             .build()
             .create(CardsApi::class.java)
