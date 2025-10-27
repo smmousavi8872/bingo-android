@@ -16,10 +16,16 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        android.buildFeatures.buildConfig = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "CARDS_BASE_URL", "\"https:cards.koyeb.app/\"")
-
+        android.buildFeatures.buildConfig = true
+        // Network base url
+        buildConfigField(
+            type = "String",
+            name = "CARDS_BASE_URL",
+            value = "\"https://cards.koyeb.app/\""
+        )
+        // Database table name
+        buildConfigField(type = "String", name = "BINGO_DB_NAME", value = "\"Bingo.db\"")
     }
 
     buildTypes {
@@ -56,6 +62,7 @@ dependencies {
     implementation(libs.bundles.androidx.ui)
     implementation(libs.bundles.network.core)
     implementation(libs.bundles.di.koin)
+    implementation(libs.bundles.db.room)
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

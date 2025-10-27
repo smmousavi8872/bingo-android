@@ -2,6 +2,7 @@ package com.smmousavi.developer.lvtgames.bingo
 
 import android.app.Application
 import com.smmousavi.developer.lvtgames.bingo.di.appModule
+import com.smmousavi.developer.lvtgames.bingo.di.databaseModule
 import com.smmousavi.developer.lvtgames.bingo.di.networkModule
 import com.smmousavi.developer.lvtgames.data.cards.datasource.di.cardsDataSourceModule
 import com.smmousavi.developer.lvtgames.data.cards.di.cardsRepositoryModule
@@ -19,6 +20,7 @@ class BingoApplication : Application() {
             androidContext(this@BingoApplication)
             modules(
                 appModule,
+                databaseModule,
                 networkModule,
                 cardsDataSourceModule,
                 cardsRepositoryModule,

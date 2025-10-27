@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.core.model.network
+package com.smmousavi.developer.lvtgames.core.model.network.dto
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable

@@ -1,10 +1,13 @@
 package com.smmousavi.developer.lvtgames.data.cards.datasource.remote
 
-import com.smmousavi.developer.lvtgames.core.model.network.CardsDto
-import com.smmousavi.developer.lvtgames.core.network.CardsApi
+import com.smmousavi.developer.lvtgames.core.model.network.dto.CardsDto
+import com.smmousavi.developer.lvtgames.core.network.CardsApiService
+import kotlinx.serialization.InternalSerializationApi
 
-class DefaultCardsRemoteDataSource(val api: CardsApi) : CardsRemoteDataSource {
+@OptIn(InternalSerializationApi::class)
+class DefaultCardsRemoteDataSource(val apiService: CardsApiService) : CardsRemoteDataSource {
+
     override suspend fun fetchCards(): Result<CardsDto> = runCatching {
-        api.getCards()
+        apiService.getCards()
     }
 }
