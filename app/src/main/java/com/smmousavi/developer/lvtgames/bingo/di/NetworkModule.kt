@@ -1,7 +1,7 @@
 package com.smmousavi.developer.lvtgames.bingo.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.smmousavi.developer.lvtgames.core.network.CardsApi
+import com.smmousavi.developer.lvtgames.core.network.CardsApiService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -45,6 +45,6 @@ val networkModule = module {
             )
             .client(get())
             .build()
-            .create(CardsApi::class.java)
+            .create(CardsApiService::class.java)
     }
 }
