@@ -16,8 +16,10 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
+        android.buildFeatures.buildConfig = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "CARDS_BASE_URL", "\"https:cards.koyeb.app/\"")
+
     }
 
     buildTypes {
@@ -42,8 +44,19 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(projects.core.network)
+    implementation(projects.core.database)
+    implementation(projects.data.cards.datasource)
+    implementation(projects.data.cards.repository)
+    implementation(projects.domain.cards.usecase)
+    implementation(projects.feature.cards)
+    implementation(projects.ui)
+
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.androidx.ui)
+    implementation(libs.bundles.network.core)
+    implementation(libs.bundles.di.koin)
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -51,6 +64,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     testImplementation(libs.junit)
+    testImplementation(libs.bundles.network.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

@@ -38,6 +38,8 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.network)
 
+    implementation(libs.bundles.di.koin)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

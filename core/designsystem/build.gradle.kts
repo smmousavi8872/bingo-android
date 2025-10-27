@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.smmousavi.developer.lvtgames.domain.cards.usecase"
+    namespace = "com.smmousavi.developer.lvtgames.core.designsystem"
     compileSdk {
         version = release(36)
     }
@@ -35,10 +35,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.data.cards.repository)
-
-    implementation(libs.bundles.di.koin)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
