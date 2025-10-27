@@ -13,22 +13,22 @@ import kotlinx.serialization.json.Json
 class DefaultCardsLocalDataSource(
     private val dao: CardsRoomDao,
     private val json: Json,
-) {
+) : CardsLocalDataSource {
     /**
      * Observes all cached cards as a stream of domain models.
      * Emits updates only when actual data content changes.
      */
-    fun observe(): Flow<CardsModel> = dao.observeCards()
+    override fun observe(): Flow<CardsModel> = dao.observeCards()
         .distinctUntilChanged()
         .map { cardPrizes ->
             cardPrizes.asCardsModel(json)
         }
 
     /**
-     * Replaces all cached cards and prizes with the new snapshot.
-     * The operation is wrapped in [Result] for safe use at higher layers.
+     * Replaces all cached cards and prizes with the new snapshot,
+     * wrapped in [Result] for safe use at higher layers.
      */
-    suspend fun upsert(snapshot: CardsModel): Result<Unit> = runCatching {
+    override suspend fun upsert(snapshot: CardsModel): Result<Unit> = runCatching {
         val cards = snapshot.asCardEntity(json)
         val prizes = snapshot.asPrizeEntity()
 
