@@ -38,7 +38,15 @@ android {
 dependencies {
     api(projects.core.model)
 
-    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.di.koin)
     implementation(libs.bundles.network.core)
-    testImplementation(libs.bundles.network.test)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
