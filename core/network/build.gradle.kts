@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    api(projects.core.model)
+
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.network.core)
     testImplementation(libs.bundles.network.test)
