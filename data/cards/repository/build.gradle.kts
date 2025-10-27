@@ -38,6 +38,8 @@ dependencies {
     api(projects.core.model)
     implementation(projects.data.cards.datasource)
 
+    implementation(libs.bundles.di.koin)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
