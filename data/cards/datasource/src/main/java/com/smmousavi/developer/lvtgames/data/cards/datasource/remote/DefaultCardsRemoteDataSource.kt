@@ -7,6 +7,10 @@ import kotlinx.serialization.InternalSerializationApi
 @OptIn(InternalSerializationApi::class)
 class DefaultCardsRemoteDataSource(val apiService: CardsApiService) : CardsRemoteDataSource {
 
+    /**
+     * Fetch all cards data form the server wrapped in
+     * [Result] for safe use at higher layers.
+     */
     override suspend fun fetchCards(): Result<CardsDto> = runCatching {
         apiService.getCards()
     }

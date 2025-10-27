@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -38,7 +39,9 @@ android {
 dependencies {
     api(projects.core.model)
 
+    implementation(libs.bundles.di.koin)
     implementation(libs.bundles.db.room)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

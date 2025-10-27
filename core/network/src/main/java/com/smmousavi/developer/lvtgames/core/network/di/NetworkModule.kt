@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.bingo.di
+package com.smmousavi.developer.lvtgames.core.network.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.smmousavi.developer.lvtgames.core.network.CardsApiService
@@ -13,14 +13,7 @@ import java.util.concurrent.TimeUnit
 
 
 val networkModule = module {
-    single {
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-        }
-    }
-
-    single {
+    single<OkHttpClient> {
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
@@ -34,7 +27,7 @@ val networkModule = module {
             .build()
     }
 
-    single {
+    single<CardsApiService> {
         val baseUrl = get<String>(named("BASE_URL")) // provided in app module
         Retrofit.Builder()
             .baseUrl(baseUrl)

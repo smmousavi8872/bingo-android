@@ -2,8 +2,8 @@ package com.smmousavi.developer.lvtgames.bingo
 
 import android.app.Application
 import com.smmousavi.developer.lvtgames.bingo.di.appModule
-import com.smmousavi.developer.lvtgames.bingo.di.databaseModule
-import com.smmousavi.developer.lvtgames.bingo.di.networkModule
+import com.smmousavi.developer.lvtgames.core.database.di.databaseModule
+import com.smmousavi.developer.lvtgames.core.network.di.networkModule
 import com.smmousavi.developer.lvtgames.data.cards.datasource.di.cardsDataSourceModule
 import com.smmousavi.developer.lvtgames.data.cards.di.cardsRepositoryModule
 import com.smmousavi.developer.lvtgames.domain.cards.di.cardsUseCaseModule
@@ -12,6 +12,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
 class BingoApplication : Application() {
+
     override fun onCreate() {
         super.onCreate()
 

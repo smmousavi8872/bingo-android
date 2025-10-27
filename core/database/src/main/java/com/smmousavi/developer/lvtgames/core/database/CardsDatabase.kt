@@ -9,7 +9,7 @@ import com.smmousavi.developer.lvtgames.core.database.entity.PrizeEntity
 @Database(
     entities = [CardEntity::class, PrizeEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class CardsDatabase : RoomDatabase() {
     abstract fun cardsDao(): CardsRoomDao

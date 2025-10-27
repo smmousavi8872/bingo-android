@@ -4,5 +4,8 @@ import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
 import kotlinx.coroutines.flow.Flow
 
 interface CardsRepository {
-    suspend fun getCards(): Flow<Result<List<CardsModel>>>
+
+    fun observeCards(): Flow<Result<CardsModel>>
+
+    suspend fun refresh(): Result<Unit>
 }
