@@ -56,7 +56,7 @@ enum class PieceState { Normal, Highlighted, Selected, Disabled }
  * - Outer rounded panel with gradient.
  * - Inner rounded panel (slightly inset) with the same gradient (softened by alpha).
  * - Top-centered game icon overlapping the top edge (negative Y offset).
- * - Grid is built from the card's matrix; each cell is a [GamePiece].
+ * - Grid is built from the card's matrix; each cell is a [CardPiece].
  */
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -68,8 +68,8 @@ fun GameCard(
     logoOverlap: Dp = 20.dp,
     onClickPiece: (PieceUiModel) -> Unit,
 ) {
-    val rows = cardModel.gameBoard.size
-    val cols = cardModel.gameBoard.firstOrNull()?.size ?: 0
+    val rows = cardModel.board.size
+    val cols = cardModel.board.firstOrNull()?.size ?: 0
     val cardBrush = rememberHorizontalBrush(
         start = cardModel.colors.startGradient,
         mid = cardModel.colors.midGradient,
@@ -197,10 +197,10 @@ fun GameCard(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val row = cardModel.gameBoard[i]
+                                    val row = cardModel.board[i]
                                     repeat(colsCount) { j ->
                                         val pieceUiModel = row[j]
-                                        GamePiece(
+                                        CardPiece(
                                             pieceModel = pieceUiModel,
                                             cellSize = cellSize,
                                             style = getPieceStyle(pieceUiModel),

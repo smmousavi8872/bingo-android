@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.core.model.domain
+package com.smmousavi.developer.lvtgames.core.model.domain.cards
 
 data class CardsModel(
     val cards: List<Card>,

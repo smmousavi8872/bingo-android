@@ -1,6 +1,6 @@
 package com.smmousavi.developer.lvtgames.domain.cards.usecase
 
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.data.cards.repository.CardsRepository
 import kotlinx.coroutines.flow.Flow
 

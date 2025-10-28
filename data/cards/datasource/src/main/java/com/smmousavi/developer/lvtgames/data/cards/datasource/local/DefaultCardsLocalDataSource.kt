@@ -4,7 +4,7 @@ import com.smmousavi.developer.lvtgames.core.database.asCardEntity
 import com.smmousavi.developer.lvtgames.core.database.asCardsModel
 import com.smmousavi.developer.lvtgames.core.database.asPrizeEntity
 import com.smmousavi.developer.lvtgames.core.database.dao.CardsRoomDao
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

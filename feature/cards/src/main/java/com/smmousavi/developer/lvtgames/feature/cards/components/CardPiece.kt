@@ -40,7 +40,7 @@ import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
 
  */
 @Composable
-fun GamePiece(
+fun CardPiece(
     modifier: Modifier = Modifier,
     pieceModel: PieceUiModel,
     style: PieceStyle = PieceStyle.Empty,
@@ -157,7 +157,7 @@ fun GamePiece(
 @Preview(showBackground = true)
 @Composable
 private fun ValuePiecePreview() {
-    GamePiece(
+    CardPiece(
         pieceModel = PieceUiModel.DEFAULT_VALUE,
         style = PieceStyle.Value,
         onClickPiece = {}
@@ -167,7 +167,7 @@ private fun ValuePiecePreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PrizePiecePreview() {
-    GamePiece(
+    CardPiece(
         pieceModel = PieceUiModel.DEFAULT_PRIZE,
         style = PieceStyle.Prize,
         onClickPiece = {}
@@ -177,7 +177,7 @@ private fun PrizePiecePreview() {
 @Preview(showBackground = true)
 @Composable
 private fun EmptyPiecePreview() {
-    GamePiece(
+    CardPiece(
         pieceModel = PieceUiModel.DEFAULT_EMPTY,
         style = PieceStyle.Empty,
         onClickPiece = {}
