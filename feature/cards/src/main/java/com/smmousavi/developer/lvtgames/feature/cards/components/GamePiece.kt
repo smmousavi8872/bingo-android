@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -23,54 +22,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceColors
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
 
 /**
- * Visual style for a piece.
- * - Square: a simple rounded square cell, used for the board grid.
- * - Token: a circular badge with concentric rings used to show marked numbers.
- */
-enum class PieceStyle { Square, Token }
-
-/**
- * State of a piece for coloring/decoration logic.
- */
-enum class PieceState { Normal, Highlighted, Selected, Disabled }
-
-/**
- * Piece of the bongo board
+ * Piece of the bongo board Composable component.
+ * Draw order:
+ * - token inner fill (behind)
+ * - drawContent() -> Cell value
+ * - token rings (over)
+ * - optional overlay (over)
  *
- * @param cellValue Optional number to show inside the piece.
- * @param colors The color values for the cell.
- * @param style Square grid cell or Token overlay with rings.
- * @param state Visual state (affects colors/alpha).
- * @param isSecondaryCell If true and style==Square, uses white background.
+ * @param pieceModel The state model of Piece.
+ * @param style Style of cell that can be Prize, Value, or Empty.
+ * @param state Visual state that cna be Normal, Disabled, Selected, Highlighted.
  * @param cellSize Width abd height of the square piece, default = 64dp.
- * @param onClick Optional click handler (adds ripple if provided).
+ * @param onClickPiece Optional click handler (adds ripple if provided).
+
  */
 @Composable
-fun Piece(
+fun GamePiece(
     modifier: Modifier = Modifier,
-    cellValue: Int?,
-    colors: PieceColors,
-    style: PieceStyle = PieceStyle.Square,
+    pieceModel: PieceUiModel,
+    style: PieceStyle = PieceStyle.Empty,
     state: PieceState = PieceState.Normal,
-    isSecondaryCell: Boolean = false,
     cellSize: Dp = 64.dp,
-    onClick: (() -> Unit)? = null,
+    onClickPiece: ((PieceUiModel) -> Unit)?,
 ) {
     val baseBackground = when (style) {
-        PieceStyle.Square -> if (isSecondaryCell) colors.secondaryCell else colors.primaryCell
-        PieceStyle.Token -> Color.Transparent
+        PieceStyle.Empty -> pieceModel.colors.background
+        PieceStyle.Prize -> Color.White
+        PieceStyle.Value -> Color.White
     }
-
     val backgroundAnim by animateColorAsState(
         targetValue = if (state == PieceState.Disabled) baseBackground.copy(alpha = 0.5f) else baseBackground,
         label = "piece-bg"
     )
-
-    val clickable = if (onClick != null)
-        Modifier.clickable(enabled = state != PieceState.Disabled, onClick = onClick)
+    val clickable = if (onClickPiece != null)
+        Modifier.clickable(
+            enabled = state != PieceState.Disabled,
+            onClick = { onClickPiece(pieceModel) })
     else Modifier
 
     Surface(
@@ -83,9 +73,9 @@ fun Piece(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = if (style == PieceStyle.Square) backgroundAnim else Color.Transparent,
+                    color = backgroundAnim,
                 )
-                .border(width = 2.dp, color = colors.tokenOuterRing)
+                .border(width = 0.5.dp, color = pieceModel.colors.prizeOuterRing)
                 .drawWithContent {
                     val w = size.width
                     val h = size.height
@@ -95,21 +85,22 @@ fun Piece(
                     val outerR = d * 0.38f
                     val midR = d * 0.30f
 
-                    // Draw token background (inner fill)
-                    if (style == PieceStyle.Token) {
+
+                    // Draw prize background (inner fill)
+                    if (style == PieceStyle.Prize) {
                         drawCircle(
-                            color = colors.tokenInnerFill,
-                            radius = midR,
+                            color = pieceModel.colors.prizeInnerFill,
+                            radius = outerR,
                             center = Offset(cx, cy)
                         )
                     }
-                    // Draw cell content
-                    drawContent()
+                    // Draw cell content if it is not empty
+                    if (style != PieceStyle.Empty) drawContent()
 
                     // Draw inner an outer rings
-                    if (style == PieceStyle.Token) {
+                    if (style == PieceStyle.Prize) {
                         drawCircle(
-                            color = colors.tokenOuterRing.let {
+                            color = pieceModel.colors.prizeOuterRing.let {
                                 if (state == PieceState.Disabled) it.copy(alpha = 0.5f) else it
                             },
                             radius = outerR,
@@ -117,7 +108,7 @@ fun Piece(
                             style = Stroke(width = d * 0.06f, cap = StrokeCap.Round)
                         )
                         drawCircle(
-                            color = colors.tokenInnerRing.let {
+                            color = pieceModel.colors.prizeInnerRing.let {
                                 if (state == PieceState.Disabled) it.copy(alpha = 0.5f) else it
                             },
                             radius = midR,
@@ -128,8 +119,8 @@ fun Piece(
 
                     // Draw overlay on top
                     when (state) {
-                        PieceState.Highlighted -> colors.highlightOverlay
-                        PieceState.Selected -> colors.selectedOverlay
+                        PieceState.Highlighted -> pieceModel.colors.highlightOverlay
+                        PieceState.Selected -> pieceModel.colors.selectedOverlay
                         else -> null
                     }?.let {
                         drawRect(color = it, size = size)
@@ -138,16 +129,24 @@ fun Piece(
             contentAlignment = Alignment.Center
         ) {
             // Cell value
-            cellValue?.let {
-                val textColor = when {
-                    style == PieceStyle.Token -> colors.textOnPrimary
-                    isSecondaryCell -> colors.textOnSecondary
-                    else -> colors.textOnPrimary
+            if (pieceModel.value >= 0) {
+                val textColor = when (style) {
+                    PieceStyle.Prize -> pieceModel.colors.textOnPrize
+                    PieceStyle.Value -> pieceModel.colors.textOnValue
+                    PieceStyle.Empty -> Color.Transparent
                 }
                 Text(
-                    text = it.toString(),
-                    color = if (state == PieceState.Disabled) textColor.copy(alpha = 0.5f) else textColor,
-                    fontSize = 28.sp,
+                    text = pieceModel.value.toString(),
+                    color = if (state == PieceState.Disabled) {
+                        textColor.copy(alpha = 0.5f)
+                    } else {
+                        textColor
+                    },
+                    fontSize = if (style == PieceStyle.Prize) {
+                        14.sp
+                    } else {
+                        20.sp
+                    },
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
@@ -158,29 +157,31 @@ fun Piece(
 
 @Preview(showBackground = true)
 @Composable
-private fun PieceSquareGreenPreview() {
-    Piece(
-        cellValue = null,
-        style = PieceStyle.Square,
-        colors = PieceColors.DEFAULT,
-        isSecondaryCell = false
+private fun ValuePiecePreview() {
+    GamePiece(
+        pieceModel = PieceUiModel.DEFAULT_VALUE,
+        style = PieceStyle.Value,
+        onClickPiece = {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PieceSquareWhitePreview() {
-    Piece(
-        cellValue = 12,
-        style = PieceStyle.Square,
-        colors = PieceColors.DEFAULT,
-        isSecondaryCell = true
+private fun PrizePiecePreview() {
+    GamePiece(
+        pieceModel = PieceUiModel.DEFAULT_PRIZE,
+        style = PieceStyle.Prize,
+        onClickPiece = {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PieceTokenPreview() {
-    Piece(cellValue = 2, style = PieceStyle.Token, colors = PieceColors.DEFAULT)
+private fun EmptyPiecePreview() {
+    GamePiece(
+        pieceModel = PieceUiModel.DEFAULT_EMPTY,
+        style = PieceStyle.Empty,
+        onClickPiece = {}
+    )
 }
 
