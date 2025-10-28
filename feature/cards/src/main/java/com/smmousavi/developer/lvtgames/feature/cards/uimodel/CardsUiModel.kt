@@ -89,7 +89,6 @@ data class CardColors(
             borderColor = Color(0xff3d7b31),
         )
     }
-
 }
 
 data class PieceColors(

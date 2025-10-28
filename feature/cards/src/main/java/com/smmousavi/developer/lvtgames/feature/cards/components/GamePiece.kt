@@ -85,7 +85,6 @@ fun GamePiece(
                     val outerR = d * 0.38f
                     val midR = d * 0.30f
 
-
                     // Draw prize background (inner fill)
                     if (style == PieceStyle.Prize) {
                         drawCircle(
