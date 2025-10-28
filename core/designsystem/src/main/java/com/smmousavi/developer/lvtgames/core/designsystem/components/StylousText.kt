@@ -27,7 +27,7 @@ import kotlin.math.max
  * or banner text.
  *
  * This component is useful for implementing stylized game titles,
- * logos, and decorative labels (e.g., the “BINGO GHANA” logo style).
+ * logos, and decorative labels.
  *
  * ### Features
  * - Draws a **crisp outer stroke** (outline) around the text.
@@ -130,7 +130,7 @@ fun StylousText(
                 val x = extraPx
                 val y = extraPx + measured.baseline
 
-                // ----- STROKE (optional) -----
+                // set stroke
                 if (strokePx > 0f) {
                     paint.apply {
                         this.style = FwPaint.Style.STROKE
@@ -141,7 +141,7 @@ fun StylousText(
                     drawContext.canvas.nativeCanvas.drawText(text, x, y, paint)
                 }
 
-                // ----- FILL (with optional shadow) -----
+                // set fill shadow
                 paint.apply {
                     this.style = FwPaint.Style.FILL
                     this.color = color.toArgb()

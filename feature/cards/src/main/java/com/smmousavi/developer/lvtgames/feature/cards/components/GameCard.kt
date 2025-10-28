@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.feature.cards.R
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
@@ -139,7 +140,7 @@ fun GameCard(
                     )
                     StylousText(
                         modifier = Modifier.padding(start = 8.dp),
-                        text = "Bet:",
+                        text = "Card Bet:",
                         color = cardModel.colors.titleColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
@@ -166,6 +167,10 @@ fun GameCard(
                         letterSpacingEm = 0.02f
                     )
                     Spacer(modifier = Modifier.weight(1f))
+                    BookmarkBadge(
+                        modifier = modifier.padding(horizontal = 8.dp),
+                        size = 26.dp
+                    )
                 }
                 // Inner rounded layer (slightly inset)
                 Box(
@@ -233,14 +238,13 @@ fun rememberHorizontalBrush(
     val endFeather = lerp(end, mid, 0.55f)
 
     return Brush.linearGradient(
-        // Wider mid band + feathered edges
         0f to start,
-        s to startFeather,   // soften left edge
-        0.5f to mid,            // dominant middle
-        1f - s to endFeather,     // soften right edge
+        s to startFeather, // soften left edge
+        0.5f to mid, // dominant middle
+        1f - s to endFeather, // soften right edge
         1f to end,
-        start = Offset(0f, 0f),    // left
-        end = Offset(1000f, 0f)  // right (direction only)
+        start = Offset(0f, 0f), // left
+        end = Offset(1000f, 0f) // right (direction only)
     )
 }
 
