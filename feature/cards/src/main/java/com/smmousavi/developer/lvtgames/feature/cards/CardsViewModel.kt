@@ -3,7 +3,7 @@ package com.smmousavi.developer.lvtgames.feature.cards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toUiModel

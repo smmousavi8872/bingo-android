@@ -2,7 +2,7 @@ package com.smmousavi.developer.lvtgames.feature.cards.uimodel
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 
 fun CardsModel.toUiModel(): CardsUiModel =
     CardsUiModel(cards = cards.map { it.toUiModel() })
@@ -11,7 +11,7 @@ fun CardsModel.Card.toUiModel(): CardUiModel {
     return CardUiModel(
         id = id,
         name = name,
-        gameBoard = matrix.toBoard(
+        board = matrix.toBoard(
             prizes = prizes.map { it.toPrizeUi() },
             colors = colors.toPieceColors()
         ),

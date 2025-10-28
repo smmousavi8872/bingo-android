@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.designsystem)
     implementation(projects.feature.cards)
     implementation(projects.feature.game)
 

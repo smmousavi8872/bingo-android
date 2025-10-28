@@ -56,6 +56,8 @@ dependencies {
     implementation(projects.data.cards.repository)
     implementation(projects.domain.cards.usecase)
     implementation(projects.feature.cards)
+    implementation(projects.domain.game.usecase)
+    implementation(projects.feature.game)
     implementation(projects.ui)
 
     implementation(libs.bundles.androidx.core)

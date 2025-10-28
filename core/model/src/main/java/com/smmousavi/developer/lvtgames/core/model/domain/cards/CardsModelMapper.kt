@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.core.model.domain
+package com.smmousavi.developer.lvtgames.core.model.domain.cards
 
 import com.smmousavi.developer.lvtgames.core.model.network.dto.CardsDto
 import kotlinx.serialization.InternalSerializationApi

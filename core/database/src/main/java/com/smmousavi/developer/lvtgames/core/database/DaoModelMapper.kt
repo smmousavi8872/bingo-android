@@ -4,7 +4,7 @@ import com.smmousavi.developer.lvtgames.core.database.entity.CardEntity
 import com.smmousavi.developer.lvtgames.core.database.entity.CardWithPrizesEntity
 import com.smmousavi.developer.lvtgames.core.database.entity.PrizeEntity
 import com.smmousavi.developer.lvtgames.core.model.database.dao.CardsDao
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

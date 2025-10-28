@@ -8,6 +8,8 @@ import com.smmousavi.developer.lvtgames.data.cards.datasource.di.cardsDataSource
 import com.smmousavi.developer.lvtgames.data.cards.di.cardsRepositoryModule
 import com.smmousavi.developer.lvtgames.domain.cards.di.cardsUseCaseModule
 import com.smmousavi.developer.lvtgames.feature.cards.di.cardsViewModelModule
+import com.smmousavi.developer.lvtgames.domain.game.di.gameUseCaseModule
+import com.smmousavi.developer.lvtgames.feature.game.di.gameViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
@@ -27,6 +29,8 @@ class BingoApplication : Application() {
                 cardsRepositoryModule,
                 cardsUseCaseModule,
                 cardsViewModelModule,
+                gameUseCaseModule,
+                gameViewModelModule,
             )
         }
     }
