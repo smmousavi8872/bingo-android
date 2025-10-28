@@ -1,10 +1,7 @@
 package com.smmousavi.developer.lvtgames.feature.cards.components
 
 
-import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
 import android.annotation.SuppressLint
-import android.widget.ImageButton
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,8 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smmousavi.developer.lvtgames.core.designsystem.R
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
-import com.smmousavi.developer.lvtgames.feature.cards.R
+import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
 import kotlin.math.max
