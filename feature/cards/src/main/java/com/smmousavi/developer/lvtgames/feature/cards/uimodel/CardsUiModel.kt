@@ -5,7 +5,11 @@ import kotlin.Int
 
 data class CardsUiModel(
     val cards: List<CardUiModel>,
-)
+) {
+    companion object {
+        val DEFAULT = listOf(CardUiModel)
+    }
+}
 
 data class CardUiModel(
     val id: Int,

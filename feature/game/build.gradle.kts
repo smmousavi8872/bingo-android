@@ -39,8 +39,9 @@ android {
 }
 
 dependencies {
-    api(projects.core.designsystem)
-    api(projects.domain.game.usecase)
+    implementation(projects.core.designsystem)
+    implementation(projects.domain.game.usecase)
+    implementation(projects.feature.cards)
 
     implementation(libs.bundles.di.koin)
 
