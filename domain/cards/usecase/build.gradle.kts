@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    api(projects.core.model)
     implementation(projects.data.cards.repository)
 
     implementation(libs.bundles.di.koin)

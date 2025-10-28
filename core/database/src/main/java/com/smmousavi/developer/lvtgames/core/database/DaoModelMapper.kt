@@ -15,13 +15,13 @@ fun CardsModel.asCardEntity(json: Json): List<CardEntity> = cards.map { card ->
         matrixJson = json.encodeToString(card.matrix),
         bet = card.bet,
         color = CardEntity.ColorEmbeddedEntity(
-            background = card.color.background,
-            backgroundGradient1 = card.color.backgroundGradient1,
-            backgroundGradient2 = card.color.backgroundGradient2,
-            backgroundGradient3 = card.color.backgroundGradient3,
-            titleColor = card.color.titleColor,
-            textColor = card.color.textColor,
-            borderColor = card.color.borderColor
+            background = card.colors.background,
+            backgroundGradient1 = card.colors.backgroundGradient1,
+            backgroundGradient2 = card.colors.backgroundGradient2,
+            backgroundGradient3 = card.colors.backgroundGradient3,
+            titleColor = card.colors.titleColor,
+            textColor = card.colors.textColor,
+            borderColor = card.colors.borderColor
         )
     )
 }
@@ -56,7 +56,7 @@ fun List<CardWithPrizesEntity>.asCardsModel(json: Json): CardsModel = CardsModel
                     number = prize.number
                 )
             },
-            color = CardsModel.Color(
+            colors = CardsModel.CardColors(
                 background = cardPrize.card.color.background,
                 backgroundGradient1 = cardPrize.card.color.backgroundGradient1,
                 backgroundGradient2 = cardPrize.card.color.backgroundGradient2,

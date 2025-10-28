@@ -23,8 +23,8 @@ fun CardsDto.asDomainModel(): CardsModel {
                     number = prize.number ?: -1
                 )
             },
-            color = card.color.let { c ->
-                CardsModel.Color(
+            colors = card.color.let { c ->
+                CardsModel.CardColors(
                     background = c?.background ?: "#054A29",
                     backgroundGradient1 = c?.backgroundGradient1 ?: "#0A5B30",
                     backgroundGradient2 = c?.backgroundGradient2 ?: "#0F6C38",

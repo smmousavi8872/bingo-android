@@ -3,8 +3,10 @@ package com.smmousavi.developer.lvtgames.feature.cards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
-import com.smmousavi.developer.lvtgames.domain.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ class CardsViewModel(
         viewModelScope.launch {
             useCase().collect { result ->
                 result
-                    .onSuccess { ui -> _state.value = UiState.Success(ui) }
+                    .onSuccess { data -> _state.value = UiState.Success(data.toUiModel()) }
                     .onFailure { e ->
                         val uiState = _state.value
                         if (uiState is UiState.Success) {
