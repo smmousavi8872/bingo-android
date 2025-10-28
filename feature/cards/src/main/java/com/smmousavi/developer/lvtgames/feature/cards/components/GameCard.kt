@@ -24,14 +24,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.smmousavi.developer.lvtgames.core.designsystem.R
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
@@ -56,20 +53,20 @@ enum class PieceState { Normal, Highlighted, Selected, Disabled }
  * - Outer rounded panel with gradient.
  * - Inner rounded panel (slightly inset) with the same gradient (softened by alpha).
  * - Top-centered game icon overlapping the top edge (negative Y offset).
- * - Grid is built from the card's matrix; each cell is a [GamePiece].
+ * - Grid is built from the card's matrix; each cell is a [CardPiece].
  */
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun GameCard(
     modifier: Modifier = Modifier,
     cardModel: CardUiModel,
-    icon: Painter,
-    logoSize: Dp = 56.dp,
-    logoOverlap: Dp = 20.dp,
+//    icon: Painter,
+//    logoSize: Dp = 56.dp,
+//    logoOverlap: Dp = 20.dp,
     onClickPiece: (PieceUiModel) -> Unit,
 ) {
-    val rows = cardModel.gameBoard.size
-    val cols = cardModel.gameBoard.firstOrNull()?.size ?: 0
+    val rows = cardModel.board.size
+    val cols = cardModel.board.firstOrNull()?.size ?: 0
     val cardBrush = rememberHorizontalBrush(
         start = cardModel.colors.startGradient,
         mid = cardModel.colors.midGradient,
@@ -197,10 +194,10 @@ fun GameCard(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val row = cardModel.gameBoard[i]
+                                    val row = cardModel.board[i]
                                     repeat(colsCount) { j ->
                                         val pieceUiModel = row[j]
-                                        GamePiece(
+                                        CardPiece(
                                             pieceModel = pieceUiModel,
                                             cellSize = cellSize,
                                             style = getPieceStyle(pieceUiModel),
@@ -261,7 +258,7 @@ private fun getPieceStyle(pieceUiModel: PieceUiModel) = if (pieceUiModel.prize =
 fun CardPreviewSample() {
     GameCard(
         cardModel = CardUiModel.DEFAULT,
-        icon = painterResource(R.drawable.log_square),
+//        icon = painterResource(R.drawable.log_square),
         onClickPiece = {}
     )
 }

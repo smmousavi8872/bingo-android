@@ -39,8 +39,8 @@ android {
 }
 
 dependencies {
-    api(projects.core.designsystem)
-    api(projects.domain.cards.usecase)
+    implementation(projects.domain.cards.usecase)
+    implementation(projects.core.designsystem)
 
     implementation(libs.bundles.di.koin)
 

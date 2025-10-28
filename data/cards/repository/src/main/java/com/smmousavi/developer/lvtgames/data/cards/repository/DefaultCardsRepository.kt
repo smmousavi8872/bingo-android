@@ -1,7 +1,7 @@
 package com.smmousavi.developer.lvtgames.data.cards.repository
 
-import com.smmousavi.developer.lvtgames.core.model.domain.CardsModel
-import com.smmousavi.developer.lvtgames.core.model.domain.asDomainModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.asDomainModel
 import com.smmousavi.developer.lvtgames.data.cards.datasource.local.CardsLocalDataSource
 import com.smmousavi.developer.lvtgames.data.cards.datasource.remote.CardsRemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher

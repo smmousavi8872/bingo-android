@@ -5,12 +5,16 @@ import kotlin.Int
 
 data class CardsUiModel(
     val cards: List<CardUiModel>,
-)
+) {
+    companion object {
+        val DEFAULT = listOf(CardUiModel)
+    }
+}
 
 data class CardUiModel(
     val id: Int,
     val name: String,
-    val gameBoard: List<List<PieceUiModel>>,
+    val board: List<List<PieceUiModel>>,
     val bet: Int,
     val colors: CardColors,
 ) {
@@ -18,7 +22,7 @@ data class CardUiModel(
         val DEFAULT = CardUiModel(
             id = 1,
             name = "Card 1",
-            gameBoard = defaultGameBoard(),
+            board = defaultBoard(),
             bet = 2100,
             colors = CardColors.DEFAULT
         )
@@ -115,7 +119,7 @@ data class PieceColors(
     }
 }
 
-private fun defaultGameBoard(): List<List<PieceUiModel>> = listOf(
+private fun defaultBoard(): List<List<PieceUiModel>> = listOf(
     listOf(
         PieceUiModel.DEFAULT_PRIZE,
         PieceUiModel.DEFAULT_EMPTY,
