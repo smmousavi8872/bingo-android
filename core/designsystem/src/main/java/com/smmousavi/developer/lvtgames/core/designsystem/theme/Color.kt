@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.ui.theme
+package com.smmousavi.developer.lvtgames.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
