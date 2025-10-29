@@ -53,15 +53,26 @@ fun CardPiece(
         PieceStyle.Prize -> Color.White
         PieceStyle.Value -> Color.White
     }
+
     val backgroundAnim by animateColorAsState(
-        targetValue = if (state == PieceState.Disabled) baseBackground.copy(alpha = 0.5f) else baseBackground,
+        targetValue = if (state == PieceState.Disabled)
+            baseBackground.copy(alpha = 0.5f)
+        else baseBackground,
         label = "piece-bg"
     )
+
     val clickable = if (onClickPiece != null)
         Modifier.clickable(
             enabled = state != PieceState.Disabled,
             onClick = { onClickPiece(pieceModel) })
     else Modifier
+
+    // Scale all visuals based on the provided cell size
+    val strokeOuter = (cellSize * 0.08f).coerceAtLeast(1.dp)
+    val strokeInner = (cellSize * 0.06f).coerceAtLeast(0.8.dp)
+    val fontPrize = (cellSize.value * 0.35f).sp      // ~22.sp for 64.dp cell
+    val fontValue = (cellSize.value * 0.5f).sp       // ~32.sp for 64.dp cell
+    val borderWidth = (cellSize * 0.01f).coerceAtLeast(0.5.dp)
 
     Surface(
         modifier = modifier
@@ -72,10 +83,8 @@ fun CardPiece(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    color = backgroundAnim,
-                )
-                .border(width = 0.5.dp, color = pieceModel.colors.prizeOuterRing)
+                .background(color = backgroundAnim)
+                .border(width = borderWidth, color = pieceModel.colors.prizeOuterRing)
                 .drawWithContent {
                     val w = size.width
                     val h = size.height
@@ -85,7 +94,7 @@ fun CardPiece(
                     val outerR = d * 0.38f
                     val midR = d * 0.30f
 
-                    // Draw prize background (inner fill)
+                    // draw inner prize fill
                     if (style == PieceStyle.Prize) {
                         drawCircle(
                             color = pieceModel.colors.prizeInnerFill,
@@ -93,10 +102,10 @@ fun CardPiece(
                             center = Offset(cx, cy)
                         )
                     }
-                    // Draw cell content if it is not empty
+
                     if (style != PieceStyle.Empty) drawContent()
 
-                    // Draw inner an outer rings
+                    // draw rings
                     if (style == PieceStyle.Prize) {
                         drawCircle(
                             color = pieceModel.colors.prizeOuterRing.let {
@@ -104,7 +113,7 @@ fun CardPiece(
                             },
                             radius = outerR,
                             center = Offset(cx, cy),
-                            style = Stroke(width = d * 0.06f, cap = StrokeCap.Round)
+                            style = Stroke(width = strokeOuter.toPx(), cap = StrokeCap.Round)
                         )
                         drawCircle(
                             color = pieceModel.colors.prizeInnerRing.let {
@@ -112,11 +121,11 @@ fun CardPiece(
                             },
                             radius = midR,
                             center = Offset(cx, cy),
-                            style = Stroke(width = d * 0.05f, cap = StrokeCap.Round)
+                            style = Stroke(width = strokeInner.toPx(), cap = StrokeCap.Round)
                         )
                     }
 
-                    // Draw overlay on top
+                    // overlay highlight/selection
                     when (state) {
                         PieceState.Highlighted -> pieceModel.colors.highlightOverlay
                         PieceState.Selected -> pieceModel.colors.selectedOverlay
@@ -127,25 +136,20 @@ fun CardPiece(
                 },
             contentAlignment = Alignment.Center
         ) {
-            // Cell value
+            // dynamic font sizing
             if (pieceModel.value >= 0) {
                 val textColor = when (style) {
                     PieceStyle.Prize -> pieceModel.colors.textOnPrize
                     PieceStyle.Value -> pieceModel.colors.textOnValue
                     PieceStyle.Empty -> Color.Transparent
                 }
+
                 Text(
                     text = pieceModel.value.toString(),
-                    color = if (state == PieceState.Disabled) {
+                    color = if (state == PieceState.Disabled)
                         textColor.copy(alpha = 0.5f)
-                    } else {
-                        textColor
-                    },
-                    fontSize = if (style == PieceStyle.Prize) {
-                        14.sp
-                    } else {
-                        20.sp
-                    },
+                    else textColor,
+                    fontSize = if (style == PieceStyle.Prize) fontPrize else fontValue,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
