@@ -15,23 +15,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
@@ -53,103 +49,97 @@ import androidx.compose.ui.unit.dp
 fun EdgeFadeContainer(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    topFadeStrength: Float = 1f,
-    bottomFadeStrength: Float = 1f,
-    startFadeStrength: Float = 1f,
-    endFadeStrength: Float = 1f,
+    topFadeStrength: Float = 0f,
+    bottomFadeStrength: Float = 0f,
+    startFadeStrength: Float = 0f,
+    endFadeStrength: Float = 0f,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val spec = LocalEdgeFadeSpec.current
     val density = LocalDensity.current
 
-    // Measure parent & inner child (post-padding) sizes
-    var parentSize by remember { mutableStateOf(IntSize.Zero) }
-    var childSize by remember { mutableStateOf(IntSize.Zero) }
+    // Resolve padding to px once per recomposition
+    val pad = remember(contentPadding, density) {
+        with(density) {
+            val start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+            val end = contentPadding.calculateRightPadding(LayoutDirection.Ltr).toPx()
+            val top = contentPadding.calculateTopPadding().toPx()
+            val bot = contentPadding.calculateBottomPadding().toPx()
+            floatArrayOf(start, top, end, bot)
+        }
+    }
 
-    // Convert padding to px (needed for correct edge detection)
-    val padStartPx =
-        with(density) { contentPadding.calculateLeftPadding(LayoutDirection.Ltr).toPx() }
-    val padEndPx =
-        with(density) { contentPadding.calculateRightPadding(LayoutDirection.Ltr).toPx() }
-    val padTopPx = with(density) { contentPadding.calculateTopPadding().toPx() }
-    val padBotPx = with(density) { contentPadding.calculateBottomPadding().toPx() }
-
-    // Base transparency at the outermost edge:
-    // fadeRatio=1f -> fully transparent at edges; 0f -> no fade at edges
-    val baseEdgeAlpha = (1f - spec.fadeRatio).coerceIn(0f, 1f)
-
-    // Strength (0..1) → alpha at edge (1..baseEdgeAlpha)
-    fun edgeAlphaFor(strength: Float): Float {
+    // Base transparency at edges from spec.fadeRatio
+    fun edgeAlpha(strength: Float): Float {
         val s = strength.coerceIn(0f, 1f)
-        // s=0 → alpha=1 (no fade); s=1 → alpha=baseEdgeAlpha (max fade)
+        val baseEdgeAlpha = (1f - spec.fadeRatio).coerceIn(0f, 1f) // 1 -> fully transparent
+        // s=0 => alpha=1 (no fade). s=1 => alpha=baseEdgeAlpha (max fade)
         return (1f - s) + baseEdgeAlpha * s
     }
 
     Box(
         modifier = modifier
-            .onSizeChanged { parentSize = it }
-            .graphicsLayer {
-                // needed so DstIn actually punches true transparency over background
-                compositingStrategy = CompositingStrategy.Offscreen
-            }
+            // offscreen so DstIn creates real transparency over background
+            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
             .drawWithContent {
                 drawContent()
 
-                if (parentSize.width == 0 || parentSize.height == 0) return@drawWithContent
+                // Inner content area (after padding) where we apply fades
+                val innerLeft = pad[0]
+                val innerTop = pad[1]
+                val innerRight = size.width - pad[2]
+                val innerBottom = size.height - pad[3]
+                val innerW = (innerRight - innerLeft).coerceAtLeast(0f)
+                val innerH = (innerBottom - innerTop).coerceAtLeast(0f)
+                if (innerW <= 0f || innerH <= 0f) return@drawWithContent
 
-                // compare inner content + padding against parent
-                val contentTotalHeight = childSize.height + padTopPx + padBotPx
-                val contentTotalWidth = childSize.width + padStartPx + padEndPx
+                val fadeRangePx = spec.fadeRange.toPx()
+                val rV = (fadeRangePx / innerH).coerceIn(0f, 0.5f)
+                val rH = (fadeRangePx / innerW).coerceIn(0f, 0.5f)
 
-                val needsV = spec.vertical && contentTotalHeight >= parentSize.height
-                val needsH = spec.horizontal && contentTotalWidth >= parentSize.width
-
-                if (!needsV && !needsH) return@drawWithContent
-
-                val sz: Size = this.size
-                val rV = (spec.fadeRange.toPx() / sz.height).coerceIn(0f, 0.5f)
-                val rH = (spec.fadeRange.toPx() / sz.width).coerceIn(0f, 0.5f)
-
-                // Vertical mask (top & bottom)
-                if (needsV) {
-                    drawRect(
-                        brush = Brush.verticalGradient(
-                            colorStops = arrayOf(
-                                0f to Color.White.copy(alpha = edgeAlphaFor(topFadeStrength)),
-                                rV to Color.White,
-                                (1f - rV) to Color.White,
-                                1f to Color.White.copy(alpha = edgeAlphaFor(bottomFadeStrength)),
-                            )
+                // Vertical fade mask (top/bottom) inside padded bounds
+                if (spec.vertical && (topFadeStrength > 0f || bottomFadeStrength > 0f)) {
+                    val vBrush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            0f to Color.White.copy(alpha = edgeAlpha(topFadeStrength)),
+                            rV to Color.White,
+                            (1f - rV) to Color.White,
+                            1f to Color.White.copy(alpha = edgeAlpha(bottomFadeStrength)),
                         ),
-                        size = sz,
+                        startY = innerTop,
+                        endY = innerBottom
+                    )
+                    drawRect(
+                        brush = vBrush,
+                        topLeft = Offset(innerLeft, innerTop),
+                        size = Size(innerW, innerH),
                         blendMode = BlendMode.DstIn
                     )
                 }
 
-                // Horizontal mask (start & end)
-                if (needsH) {
-                    drawRect(
-                        brush = Brush.horizontalGradient(
-                            colorStops = arrayOf(
-                                0f to Color.White.copy(alpha = edgeAlphaFor(startFadeStrength)),
-                                rH to Color.White,
-                                (1f - rH) to Color.White,
-                                1f to Color.White.copy(alpha = edgeAlphaFor(endFadeStrength)),
-                            )
+                // Horizontal fade mask (start/end) inside padded bounds
+                if (spec.horizontal && (startFadeStrength > 0f || endFadeStrength > 0f)) {
+                    val hBrush = Brush.horizontalGradient(
+                        colorStops = arrayOf(
+                            0f to Color.White.copy(alpha = edgeAlpha(startFadeStrength)),
+                            rH to Color.White,
+                            (1f - rH) to Color.White,
+                            1f to Color.White.copy(alpha = edgeAlpha(endFadeStrength)),
                         ),
-                        size = sz,
+                        startX = innerLeft,
+                        endX = innerRight
+                    )
+                    drawRect(
+                        brush = hBrush,
+                        topLeft = Offset(innerLeft, innerTop),
+                        size = Size(innerW, innerH),
                         blendMode = BlendMode.DstIn
                     )
                 }
             }
     ) {
-        // still apply padding to layout, childSize measures inner content (post-padding)
-        Box(
-            modifier = Modifier
-                .padding(contentPadding)
-                .onSizeChanged { childSize = it },
-            content = content
-        )
+        // Just lay out your content with the same padding used for the fade bounds
+        Box(Modifier.padding(contentPadding), content = content)
     }
 }
 

@@ -6,10 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
@@ -38,13 +38,13 @@ fun BingoApp(
         viewModel.observeCards()
     }
 
-    Surface(color = MaterialTheme.colorScheme.background) {
+    Surface(color = Color.Red) {
         when (val cardsState = state.value) {
             is UiState.Loading -> LoadingScreen()
             is UiState.Error -> ErrorScreen(cardsState.message)
             is UiState.Success -> GameScreen(
                 cards = cardsState.data.cards,
-                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 24.dp)
+                contentPadding = PaddingValues(24.dp)
             )
         }
     }

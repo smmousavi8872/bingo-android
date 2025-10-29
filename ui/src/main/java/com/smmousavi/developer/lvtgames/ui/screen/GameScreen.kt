@@ -11,7 +11,7 @@ import com.smmousavi.developer.lvtgames.feature.game.components.GameCardList
 fun GameScreen(
     cards: List<CardUiModel>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues,
     onCardClick: (CardUiModel) -> Unit = {},
 ) {
     GameCardList(
