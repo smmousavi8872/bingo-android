@@ -75,15 +75,15 @@ import kotlin.math.max
 fun StylousText(
     modifier: Modifier = Modifier,
     text: String,
-    color: Color = Color.White,
-    fontSize: TextUnit = 48.sp,
-    fontWeight: FontWeight? = null,
-    strokeWidth: Dp = 0.dp,
+    color: Color = Color(0xFFFFD700),
+    fontSize: TextUnit = 24.sp,
+    fontWeight: FontWeight? = FontWeight.Bold,
+    strokeWidth: Dp = 2.dp,
     strokeColor: Color = Color.Black,
-    shadowColor: Color = Color.Black.copy(alpha = 0.7f),
-    shadowOffsetX: Dp = 2.dp,
-    shadowOffsetY: Dp = 2.dp,
-    shadowBlur: Dp = 6.dp,
+    shadowColor: Color = Color(0xFFB71C1C).copy(alpha = 0.7f),
+    shadowOffsetX: Dp = 1.dp,
+    shadowOffsetY: Dp = 1.dp,
+    shadowBlur: Dp = 4.dp,
     letterSpacingEm: Float = 0f,
 ) {
     val density = LocalDensity.current

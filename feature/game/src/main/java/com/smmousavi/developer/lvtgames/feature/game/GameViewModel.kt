@@ -20,13 +20,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class GameViewModel(
-    private val useCase: GameBoardUseCase,
-) : ViewModel() {
+class GameViewModel(private val useCase: GameBoardUseCase) : ViewModel() {
 
     private val _state = MutableStateFlow(GameUiModel())
     val state: StateFlow<GameUiModel> = _state
-
     private var autoJob: Job? = null
     private val rng = Random(System.currentTimeMillis())
 
