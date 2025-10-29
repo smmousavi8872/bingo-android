@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -104,13 +105,15 @@ fun GameCard(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
                 ) {
                     StylousText(
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(start = 8.dp, end = 4.dp),
                         text = cardModel.name,
                         color = cardModel.colors.titleColor,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         strokeWidth = 1.dp,
                         strokeColor = Color(0xFF746343),
@@ -133,10 +136,10 @@ fun GameCard(
                             .width(1.dp)
                     )
                     StylousText(
-                        modifier = Modifier.padding(start = 8.dp),
+                        modifier = Modifier.padding(start = 4.dp),
                         text = "Card Bet:",
                         color = cardModel.colors.titleColor,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         strokeWidth = 1.dp,
                         strokeColor = Color(0xFF746343),
@@ -147,10 +150,9 @@ fun GameCard(
                         letterSpacingEm = 0.02f
                     )
                     StylousText(
-                        modifier = Modifier.padding(end = 8.dp),
                         text = cardModel.bet.toString(),
                         color = cardModel.colors.titleColor,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         strokeWidth = 1.dp,
                         strokeColor = Color(0xFF746343),
@@ -162,15 +164,16 @@ fun GameCard(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     BookmarkBadge(
-                        modifier = modifier.padding(horizontal = 8.dp),
-                        size = 26.dp
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(top = 4.dp, end = 16.dp),
+                        size = 24.dp
                     )
                 }
                 // Inner rounded layer (slightly inset)
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .padding(bottom = 8.dp)
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                         .border(
                             width = 1.25.dp,
                             color = cardModel.colors.borderColor,

@@ -31,7 +31,7 @@ private fun CardsModel.CardColors.toPieceColors(): PieceColors {
     return PieceColors(
         background = background.toColorOr(default = PieceColors.DEFAULT.background),
         textOnValue = textColor.toColorOr(default = PieceColors.DEFAULT.textOnValue),
-        textOnPrize = borderColor.toColorOr(default = PieceColors.DEFAULT.textOnPrize),
+        textOnPrize = textColor.toColorOr(default = PieceColors.DEFAULT.textOnPrize),
         prizeOuterRing = borderColor.toColorOr(default = PieceColors.DEFAULT.prizeOuterRing),
         prizeInnerRing = background.toColorOr(default = PieceColors.DEFAULT.prizeInnerRing),
         prizeInnerFill = background.toColorOr(default = PieceColors.DEFAULT.prizeInnerRing)
