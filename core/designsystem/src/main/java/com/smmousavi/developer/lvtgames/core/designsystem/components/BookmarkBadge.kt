@@ -43,13 +43,23 @@ fun BookmarkBadge(
     cornerRadius: Dp = 4.dp,
     onClick: (() -> Unit)? = null,
 ) {
-    val shape = RoundedCornerShape(cornerRadius)
+    // Scale factor vs a 40.dp design baseline
+    val k = (size.value / 40f).coerceAtLeast(0.5f)
+
+    val shape = RoundedCornerShape(
+        if (cornerRadius == 4.dp) (size * 0.1f) else cornerRadius
+    )
     val interaction = remember { MutableInteractionSource() }
+
+    val outerBorder = (1f * k).dp
+    val innerBorder = (1f * k).dp
+    val innerPad = (1f * k).dp
+    val elevation = (6f * k).dp
 
     Box(
         modifier = modifier
             .shadow(
-                elevation = 6.dp,
+                elevation = elevation,
                 shape = shape,
                 clip = false
             )
@@ -65,25 +75,13 @@ fun BookmarkBadge(
             .size(size)
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(
-                        colors.fillStart,
-                        colors.fillMid,
-                        colors.fillEnd
-                    )
+                    listOf(colors.fillStart, colors.fillMid, colors.fillEnd)
                 ),
                 shape = shape
             )
-            .border(
-                width = 1.dp,
-                color = colors.frame,
-                shape = shape
-            )
-            .padding(1.dp)
-            .border(
-                width = 1.dp,
-                color = colors.fillEnd,
-                shape = shape
-            ),
+            .border(width = outerBorder, color = colors.frame, shape = shape)
+            .padding(innerPad)
+            .border(width = innerBorder, color = colors.fillEnd, shape = shape),
         contentAlignment = Alignment.Center
     ) {
         Icon(

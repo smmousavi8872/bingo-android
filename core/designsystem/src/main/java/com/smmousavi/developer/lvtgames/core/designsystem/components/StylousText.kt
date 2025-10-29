@@ -1,7 +1,5 @@
 package com.smmousavi.developer.lvtgames.core.designsystem.components
 
-import android.graphics.Paint as FwPaint
-import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -88,62 +86,71 @@ fun StylousText(
 ) {
     val density = LocalDensity.current
     val textSizePx = with(density) { fontSize.toPx() }
-    val strokePx = with(density) { strokeWidth.toPx() }
-    val shadowDx = with(density) { shadowOffsetX.toPx() }
-    val shadowDy = with(density) { shadowOffsetY.toPx() }
-    val shadowBlurPx = with(density) { shadowBlur.toPx() }
 
-    // set a single Android Paint to mutate, not reassigning
-    val paint = remember { FwPaint().apply { isAntiAlias = true } }
-    // configure base text attributes used for measurement
+    // Baseline at 24sp, scale everything from that
+    val baselinePx = with(density) { 24.sp.toPx() }
+    val scale = (textSizePx / baselinePx).coerceIn(0.5f, 6f)
+
+    // Ensure sensible minimums relative to font size (but honor explicit values if larger)
+    val minStrokePx     = textSizePx * 0.05f  // about 5% of glyph height
+    val minShadowBlurPx = textSizePx * 0.08f
+    val minShadowOffsPx = textSizePx * 0.02f
+
+    val strokePx = max(
+        with(density) { strokeWidth.toPx() },
+        minStrokePx
+    )
+    val shadowDx = max(with(density) { shadowOffsetX.toPx() }, minShadowOffsPx)
+    val shadowDy = max(with(density) { shadowOffsetY.toPx() }, minShadowOffsPx)
+    val shadowBlurPx = max(with(density) { shadowBlur.toPx() }, minShadowBlurPx)
+
+    val paint = remember { android.graphics.Paint().apply { isAntiAlias = true } }
     remember(text, textSizePx, fontWeight, letterSpacingEm) {
         paint.apply {
             reset()
-            this.isAntiAlias = true
-            this.textSize = textSizePx
-            this.typeface = Typeface.create(
-                Typeface.DEFAULT,
-                if ((fontWeight?.weight ?: 400) >= 700) Typeface.BOLD else Typeface.NORMAL
+            isAntiAlias = true
+            textSize = textSizePx
+            typeface = android.graphics.Typeface.create(
+                android.graphics.Typeface.DEFAULT,
+                if ((fontWeight?.weight ?: 400) >= 700) android.graphics.Typeface.BOLD
+                else android.graphics.Typeface.NORMAL
             )
-            this.letterSpacing = letterSpacingEm
+            letterSpacing = letterSpacingEm
         }
     }
-    // measure single line
+
     val measured = remember(text, textSizePx, letterSpacingEm, fontWeight) {
-        val width = paint.measureText(text)
+        val w = paint.measureText(text)
         val fm = paint.fontMetrics
-        val height = fm.descent - fm.ascent
-        TextMeasure(width = width, height = height, baseline = -fm.ascent)
+        val h = fm.descent - fm.ascent
+        TextMeasure(width = w, height = h, baseline = -fm.ascent)
     }
-    // extra padding so stroke and shadow don’t get clipped
-    val extraPx = max(
-        strokePx * 1.2f,
-        shadowBlurPx + max(shadowDx, shadowDy)
-    )
+
+    // extra padding so stroke & shadow aren’t clipped (scaled)
+    val extraPx = max(strokePx * 1.2f, shadowBlurPx + max(shadowDx, shadowDy))
     val layoutWidthPx = measured.width + extraPx * 2
     val layoutHeightPx = measured.height + extraPx * 2
 
     Layout(
         content = {
             Canvas(Modifier) {
-                // draw at (x, y) with baseline aligned inside our padded canvas
                 val x = extraPx
                 val y = extraPx + measured.baseline
 
-                // set stroke
+                // Stroke (outline)
                 if (strokePx > 0f) {
                     paint.apply {
-                        this.style = FwPaint.Style.STROKE
+                        style = android.graphics.Paint.Style.STROKE
                         this.strokeWidth = strokePx
                         this.color = strokeColor.toArgb()
-                        clearShadowLayer() // keep stroke crisp
+                        clearShadowLayer()
                     }
                     drawContext.canvas.nativeCanvas.drawText(text, x, y, paint)
                 }
 
-                // set fill shadow
+                // Fill + shadow
                 paint.apply {
-                    this.style = FwPaint.Style.FILL
+                    style = android.graphics.Paint.Style.FILL
                     this.color = color.toArgb()
                     if (shadowBlurPx > 0f || shadowDx != 0f || shadowDy != 0f) {
                         setShadowLayer(shadowBlurPx, shadowDx, shadowDy, shadowColor.toArgb())
@@ -159,9 +166,7 @@ fun StylousText(
         val placeable = measurables.first().measure(constraints.copy(minWidth = 0, minHeight = 0))
         val w = layoutWidthPx.toInt().coerceIn(0, constraints.maxWidth)
         val h = layoutHeightPx.toInt().coerceIn(0, constraints.maxHeight)
-        layout(w, h) {
-            placeable.place(0, 0)
-        }
+        layout(w, h) { placeable.place(0, 0) }
     }
 }
 
