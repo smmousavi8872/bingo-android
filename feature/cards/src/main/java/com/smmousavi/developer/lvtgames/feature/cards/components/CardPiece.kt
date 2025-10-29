@@ -45,7 +45,7 @@ fun CardPiece(
     pieceModel: PieceUiModel,
     style: PieceStyle = PieceStyle.Empty,
     state: PieceState = PieceState.Normal,
-    cellSize: Dp = 68.dp,
+    cellSize: Dp = 64.dp,
     onClickPiece: ((PieceUiModel) -> Unit)?,
 ) {
     val baseBackground = when (style) {

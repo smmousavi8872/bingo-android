@@ -36,16 +36,9 @@ fun GameCardList(
     }
 }
 
-@Preview(
-    name = "Game Card List Preview",
-    showBackground = true,
-    backgroundColor = 0xFF1B1B1B, // dark background to make colors pop
-    widthDp = 412,
-    heightDp = 732
-)
+@Preview(showBackground = true)
 @Composable
 fun PreviewGameCardList() {
-    // Create a few visually distinct copies of DEFAULT for variation
     val mockCards = listOf(
         CardUiModel.DEFAULT,
         CardUiModel.DEFAULT.copy(
