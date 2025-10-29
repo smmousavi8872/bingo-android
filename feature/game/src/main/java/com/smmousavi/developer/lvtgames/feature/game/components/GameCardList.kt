@@ -35,23 +35,25 @@ fun GameCardList(
 
     ProvideEdgeFadeSpec(
         EdgeFadeSpec(
-            fadeRange = 144.dp,
+            fadeRange = 32.dp,
             fadeRatio = 1f,
             vertical = true,
             horizontal = false,
         )
     ) {
         EdgeFadeContainer(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier
+                .wrapContentWidth()
+                .fillMaxHeight(),
             contentPadding = contentPadding,
             topFadeStrength = edgeFadeState.top.value,
             bottomFadeStrength = edgeFadeState.bottom.value
         ) {
             LazyColumn(
                 state = listState,
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.wrapContentSize(),
                 contentPadding = PaddingValues(vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(
@@ -64,7 +66,7 @@ fun GameCardList(
                     ) {
                         // scale logo by card width
                         val logoSize = maxWidth * 0.18f // 18% of card width
-                        val logoOverlap = logoSize * 0.28f // overlap upward by 28% of logo size
+                        val logoOverlap = logoSize * 0.24f // overlap upward by 28% of logo size
 
                         GameCard(
                             cardModel = model,

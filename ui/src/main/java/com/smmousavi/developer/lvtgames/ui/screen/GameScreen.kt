@@ -1,23 +1,25 @@
 package com.smmousavi.developer.lvtgames.ui.screen
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.game.components.GameCardList
+import com.smmousavi.developer.lvtgames.feature.game.components.GameBoard
 
 @Composable
 fun GameScreen(
     cards: List<CardUiModel>,
+//    selectedCard: CardUiModel,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues,
-    onCardClick: (CardUiModel) -> Unit = {},
 ) {
-    GameCardList(
-        cards = cards,
-        modifier = modifier,
-        contentPadding = contentPadding,
-        onCardClick = onCardClick
-    )
+    Row(modifier = modifier) {
+        GameBoard(
+            modifier = modifier,
+            cards = cards,
+//        selectedCard = selectedCard,
+        )
+
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.smmousavi.developer.lvtgames.ui
 
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         enableEdgeToEdge()
         setContent {
             BingoApp()
@@ -38,13 +40,12 @@ fun BingoApp(
         viewModel.observeCards()
     }
 
-    Surface(color = Color.Red) {
+    Surface {
         when (val cardsState = state.value) {
             is UiState.Loading -> LoadingScreen()
             is UiState.Error -> ErrorScreen(cardsState.message)
             is UiState.Success -> GameScreen(
                 cards = cardsState.data.cards,
-                contentPadding = PaddingValues(24.dp)
             )
         }
     }
