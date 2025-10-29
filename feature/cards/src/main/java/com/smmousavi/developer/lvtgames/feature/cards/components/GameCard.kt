@@ -61,9 +61,6 @@ enum class PieceState { Normal, Highlighted, Selected, Disabled }
 fun GameCard(
     modifier: Modifier = Modifier,
     cardModel: CardUiModel,
-//    icon: Painter,
-//    logoSize: Dp = 56.dp,
-//    logoOverlap: Dp = 20.dp,
     onClickPiece: (PieceUiModel) -> Unit,
 ) {
     val rows = cardModel.board.size
@@ -261,7 +258,6 @@ private fun getPieceStyle(pieceUiModel: PieceUiModel) = if (pieceUiModel.prize =
 fun CardPreviewSample() {
     GameCard(
         cardModel = CardUiModel.DEFAULT,
-//        icon = painterResource(R.drawable.log_square),
         onClickPiece = {}
     )
 }
