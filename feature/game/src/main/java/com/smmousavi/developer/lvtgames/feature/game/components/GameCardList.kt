@@ -25,9 +25,9 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.re
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun GameCardList(
-    cards: List<CardUiModel>,
-    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    cards: List<CardUiModel>,
     onCardClick: (CardUiModel) -> Unit = {},
 ) {
     val listState = rememberLazyListState()
@@ -35,7 +35,7 @@ fun GameCardList(
 
     ProvideEdgeFadeSpec(
         EdgeFadeSpec(
-            fadeRange = 32.dp,
+            fadeRange = 48.dp,
             fadeRatio = 1f,
             vertical = true,
             horizontal = false,
@@ -52,7 +52,7 @@ fun GameCardList(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.wrapContentSize(),
-                contentPadding = PaddingValues(vertical = 8.dp),
+                contentPadding = PaddingValues(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -122,7 +122,6 @@ fun PreviewGameCardList() {
 
     GameCardList(
         cards = mockCards,
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
         onCardClick = { selected ->
             println("Clicked card: ${selected.name}")
         }

@@ -1,9 +1,7 @@
 package com.smmousavi.developer.lvtgames.feature.game.components
 
-import android.R.attr.maxWidth
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -41,7 +39,7 @@ fun GameBoard(
         BoxWithConstraints(modifier = Modifier.weight(0.7f)) {
             // scale logo by card width
             val logoSize = maxWidth * 0.15f // 15% of card width
-            val logoOverlap = logoSize * 0.32f // overlap upward by 28% of logo size
+            val logoOverlap = logoSize * 0.32f // overlap upward by 32% of logo size
 
             GameCard(cardModel = currentCard) {
                 // onPieceClick
@@ -63,7 +61,6 @@ fun GameBoard(
         GameCardList(
             modifier = Modifier.weight(0.3f),
             cards = cards,
-            contentPadding = PaddingValues(vertical = 16.dp),
             onCardClick = { card ->
                 currentCard = card
             }
