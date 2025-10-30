@@ -49,7 +49,7 @@ enum class PieceStyle { Empty, Prize, Value }
 enum class PieceState { Normal, Highlighted, Selected, Disabled }
 
 /**
- * Server-driven Bingo Card.
+ * A single Bingo Card used inside the **GameBoard** and **GameCardList**.
  *
  * - Outer rounded panel with gradient.
  * - Inner rounded panel (slightly inset) with the same gradient (softened by alpha).
@@ -267,7 +267,6 @@ private fun getPieceStyle(pieceUiModel: PieceUiModel) = if (pieceUiModel.prize =
 } else {
     PieceStyle.Prize
 }
-
 
 @Composable
 @Preview(showBackground = true)

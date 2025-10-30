@@ -3,41 +3,48 @@ package com.smmousavi.developer.lvtgames.feature.cards.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
+import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
 
 /**
- * Piece of the bongo board Composable component.
- * Draw order:
- * - token inner fill (behind)
- * - drawContent() -> Cell value
- * - token rings (over)
- * - optional overlay (over)
+ * A single **board cell** displaying either a number, a prize token, or an empty slot.
  *
- * @param pieceModel The state model of Piece.
- * @param style Style of cell that can be Prize, Value, or Empty.
- * @param state Visual state that cna be Normal, Disabled, Selected, Highlighted.
- * @param cellSize Width abd height of the square piece, default = 64dp.
- * @param onClickPiece Optional click handler (adds ripple if provided).
-
+ * Renders a responsive square cell using [RingButton] with these visual layers:
+ * 1. Background
+ * 2. Optional filled circle and concentric rings (for [PieceStyle.Prize])
+ * 3. Cell content (number)
+ * 4. Optional overlay (for highlight or selection)
+ *
+ * Behavior:
+ * - Disabled cells appear dimmed.
+ * - Highlighted or selected cells draw a semi-transparent overlay.
+ * - If [onClickPiece] is provided, the cell is clickable (unless disabled).
+ *
+ * All sizes, strokes, and text scale from [cellSize] for consistent proportions.
+ *
+ * @param modifier Modifier for layout and styling.
+ * @param pieceModel Cell data (number, prize, and color palette).
+ * @param style Visual style: [PieceStyle.Empty], [PieceStyle.Value], or [PieceStyle.Prize].
+ * @param state Visual state: [PieceState.Normal], [PieceState.Highlighted],
+ *              [PieceState.Selected], or [PieceState.Disabled].
+ * @param cellSize Width and height of the cell; defines all internal scaling.
+ * @param onClickPiece Optional click callback that passes the current [pieceModel].
  */
 @Composable
 fun CardPiece(
@@ -61,97 +68,82 @@ fun CardPiece(
         label = "piece-bg"
     )
 
-    val clickable = if (onClickPiece != null)
-        Modifier.clickable(
-            enabled = state != PieceState.Disabled,
-            onClick = { onClickPiece(pieceModel) })
-    else Modifier
-
-    // Scale all visuals based on the provided cell size
     val strokeOuter = (cellSize * 0.08f).coerceAtLeast(1.dp)
     val strokeInner = (cellSize * 0.06f).coerceAtLeast(0.8.dp)
-    val fontPrize = (cellSize.value * 0.35f).sp      // ~22.sp for 64.dp cell
-    val fontValue = (cellSize.value * 0.5f).sp       // ~32.sp for 64.dp cell
     val borderWidth = (cellSize * 0.01f).coerceAtLeast(0.5.dp)
+
+    val fillColor = if (style == PieceStyle.Prize) pieceModel.colors.prizeInnerFill else null
+
+    val outerRingSpec = if (style == PieceStyle.Prize)
+        RingSpec(
+            color = pieceModel.colors.prizeOuterRing.let { c ->
+                if (state == PieceState.Disabled) c.copy(alpha = 0.5f) else c
+            },
+            width = strokeOuter,
+            radiusRatio = 0.38f
+        ) else null
+
+    val innerRingSpec = if (style == PieceStyle.Prize)
+        RingSpec(
+            color = pieceModel.colors.prizeInnerRing.let { c ->
+                if (state == PieceState.Disabled) c.copy(alpha = 0.5f) else c
+            },
+            width = strokeInner,
+            radiusRatio = 0.30f
+        ) else null
 
     Surface(
         modifier = modifier
             .size(cellSize)
-            .then(clickable),
+            .then(
+                if (onClickPiece != null) {
+                    Modifier.clickable(
+                        enabled = state != PieceState.Disabled,
+                        onClick = { onClickPiece(pieceModel) }
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         color = Color.Transparent
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = backgroundAnim)
-                .border(width = borderWidth, color = pieceModel.colors.prizeOuterRing)
-                .drawWithContent {
-                    val w = size.width
-                    val h = size.height
-                    val d = minOf(w, h)
-                    val cx = w / 2f
-                    val cy = h / 2f
-                    val outerR = d * 0.38f
-                    val midR = d * 0.30f
-
-                    // draw inner prize fill
-                    if (style == PieceStyle.Prize) {
-                        drawCircle(
-                            color = pieceModel.colors.prizeInnerFill,
-                            radius = outerR,
-                            center = Offset(cx, cy)
-                        )
-                    }
-
-                    if (style != PieceStyle.Empty) drawContent()
-
-                    // draw rings
-                    if (style == PieceStyle.Prize) {
-                        drawCircle(
-                            color = pieceModel.colors.prizeOuterRing.let {
-                                if (state == PieceState.Disabled) it.copy(alpha = 0.5f) else it
-                            },
-                            radius = outerR,
-                            center = Offset(cx, cy),
-                            style = Stroke(width = strokeOuter.toPx(), cap = StrokeCap.Round)
-                        )
-                        drawCircle(
-                            color = pieceModel.colors.prizeInnerRing.let {
-                                if (state == PieceState.Disabled) it.copy(alpha = 0.5f) else it
-                            },
-                            radius = midR,
-                            center = Offset(cx, cy),
-                            style = Stroke(width = strokeInner.toPx(), cap = StrokeCap.Round)
-                        )
-                    }
-
-                    // overlay highlight/selection
-                    when (state) {
-                        PieceState.Highlighted -> pieceModel.colors.highlightOverlay
-                        PieceState.Selected -> pieceModel.colors.selectedOverlay
-                        else -> null
-                    }?.let {
-                        drawRect(color = it, size = size)
-                    }
-                },
-            contentAlignment = Alignment.Center
+        RingButton(
+            size = cellSize,
+            backgroundColor = backgroundAnim,
+            borderColor = pieceModel.colors.prizeOuterRing,
+            borderWidth = borderWidth,
+            filledCircleColor = fillColor,
+            outerRing = outerRingSpec,
+            innerRing = innerRingSpec,
+            onClick = onClickPiece?.let { { it(pieceModel) } }
         ) {
-            // dynamic font sizing
             if (pieceModel.value >= 0) {
                 val textColor = when (style) {
                     PieceStyle.Prize -> pieceModel.colors.textOnPrize
                     PieceStyle.Value -> pieceModel.colors.textOnValue
                     PieceStyle.Empty -> Color.Transparent
-                }
+                }.let { if (state == PieceState.Disabled) it.copy(alpha = 0.5f) else it }
 
                 Text(
                     text = pieceModel.value.toString(),
-                    color = if (state == PieceState.Disabled)
-                        textColor.copy(alpha = 0.5f)
-                    else textColor,
-                    fontSize = if (style == PieceStyle.Prize) fontPrize else fontValue,
+                    color = textColor,
+                    fontSize = if (style == PieceStyle.Prize) (cellSize.value * 0.35f).sp
+                    else (cellSize.value * 0.5f).sp,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
+                )
+            }
+
+            when (state) {
+                PieceState.Highlighted -> pieceModel.colors.highlightOverlay
+                PieceState.Selected -> pieceModel.colors.selectedOverlay
+                else -> null
+            }?.let {
+                // simple overlay rectangle on top of content if desired
+                Box(
+                    Modifier
+                        .matchParentSize()
+                        .background(it)
                 )
             }
         }
