@@ -38,8 +38,8 @@ fun GameBoard(
     ) {
         BoxWithConstraints(modifier = Modifier.weight(0.7f)) {
             // scale logo by card width
-            val logoSize = maxWidth * 0.15f // 15% of card width
-            val logoOverlap = logoSize * 0.32f // overlap upward by 32% of logo size
+            val logoSize = maxWidth * 0.18f // 15% of card width
+            val logoOverlap = logoSize * 0.30f // overlap upward by 32% of logo size
 
             GameCard(cardModel = currentCard) {
                 // onPieceClick

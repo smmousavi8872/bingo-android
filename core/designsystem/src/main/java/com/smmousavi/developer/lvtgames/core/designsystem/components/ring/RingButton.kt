@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 fun RingButton(
     modifier: Modifier = Modifier,
     size: Dp = 64.dp,
-    backgroundColor: Color,
+    backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.5.dp,
     filledCircleColor: Color? = null,
