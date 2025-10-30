@@ -12,7 +12,6 @@ sealed interface UiState<out T> {
     data class Success<T>(
         val data: T,
         val isRefreshing: Boolean = false,
-        val errorMessage: String? = null,
     ) : UiState<T>
 
     data class Error(

@@ -23,37 +23,13 @@ class CardsViewModel(
         viewModelScope.launch {
             useCase().collect { result ->
                 result
-                    .onSuccess { data -> _state.value = UiState.Success(data.toUiModel()) }
-                    .onFailure { e ->
-                        val uiState = _state.value
-                        if (uiState is UiState.Success) {
-                            _state.value = uiState.copy(errorMessage = e.message)
-                        } else {
-                            _state.value = UiState.Error(e.message ?: "Unknown error", e)
-                        }
+                    .onSuccess { data ->
+                        if (data.cards.isNotEmpty()) _state.value =
+                            UiState.Success(data.toUiModel())
                     }
-            }
-        }
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            _state.update {
-                when (it) {
-                    is UiState.Success -> it.copy(isRefreshing = true)
-                    else -> UiState.Loading
-                }
-            }
-            val result = useCase.refresh()
-            result.exceptionOrNull()?.let { e ->
-                val uiState = _state.value
-                _state.value = if (uiState is UiState.Success)
-                    uiState.copy(isRefreshing = false, errorMessage = e.message)
-                else UiState.Error(e.message ?: "Refresh failed", e)
-            } ?: run {
-                // success; DB upsert will trigger a new emission
-                val uiState = _state.value
-                if (uiState is UiState.Success) _state.value = uiState.copy(isRefreshing = false)
+                    .onFailure { e ->
+                        _state.value = UiState.Error(e.message ?: "Unknown error", e)
+                    }
             }
         }
     }
