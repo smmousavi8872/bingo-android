@@ -65,8 +65,8 @@ fun GameCardList(
                             .fillMaxWidth()
                     ) {
                         // scale logo by card width
-                        val logoSize = maxWidth * 0.18f // 18% of card width
-                        val logoOverlap = logoSize * 0.24f // overlap upward by 28% of logo size
+                        val logoSize = maxWidth * 0.20f // 20% of card width
+                        val logoOverlap = logoSize * 0.24f // overlap upward by 26% of logo size
 
                         GameCard(
                             cardModel = model,
