@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -117,9 +118,11 @@ fun GameCard(
                         .fillMaxWidth()
                 ) {
                     StylousText(
-                        modifier = Modifier.padding(
-                            end = scale.innerPad * 0.5f
-                        ),
+                        modifier = Modifier
+                            .padding(
+                                end = scale.innerPad * 0.5f
+                            )
+                            .offset(y = (-4).dp),
                         text = cardModel.name,
                         color = cardModel.colors.titleColor,
                         fontSize = scale.titleSp,
@@ -137,15 +140,19 @@ fun GameCard(
                         modifier = Modifier
                             .height((cellSize * 0.5f).coerceIn(14.dp, 22.dp))
                             .width(scale.border)
+                            .offset(y = (-4).dp)
                     )
                     VerticalDivider(
                         color = cardModel.colors.borderColor,
                         modifier = Modifier
                             .height((cellSize * 0.5f).coerceIn(14.dp, 22.dp))
                             .width(scale.border)
+                            .offset(y = (-4).dp)
                     )
                     StylousText(
-                        modifier = Modifier.padding(start = scale.innerPad * 0.5f),
+                        modifier = Modifier
+                            .padding(start = scale.innerPad * 0.5f)
+                            .offset(y = (-4).dp),
                         text = "Card Bet:",
                         color = cardModel.colors.titleColor,
                         fontSize = scale.labelSp,
@@ -159,6 +166,8 @@ fun GameCard(
                         letterSpacingEm = 0.02f
                     )
                     StylousText(
+                        modifier = Modifier
+                            .offset(y = (-4).dp),
                         text = cardModel.bet.toString(),
                         color = cardModel.colors.titleColor,
                         fontSize = scale.valueSp,
