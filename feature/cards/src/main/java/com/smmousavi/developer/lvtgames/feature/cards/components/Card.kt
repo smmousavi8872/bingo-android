@@ -99,7 +99,7 @@ fun Card(
                     color = cardModel.colors.background.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(8.dp)
                 )
-                .clickable { onClickCard() }
+                .clickable { if (isPreview) onClickCard() }
         ) {
             // Rebuild the header row here with scaled fonts/borders
             Column(
@@ -224,7 +224,9 @@ fun Card(
                                         cellSize = cellSize,
                                         style = style,
                                         onClickCell = {
-                                            if (isPreview.not()) {
+                                            if (isPreview) {
+                                                onClickCard()
+                                            } else {
                                                 if (style == CellStyle.Value) {
                                                     viewModel.addCardPrize(
                                                         newPrize(

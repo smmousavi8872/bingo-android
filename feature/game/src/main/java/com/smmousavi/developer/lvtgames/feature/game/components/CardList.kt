@@ -32,7 +32,7 @@ fun CardList(
     listState: LazyListState = rememberLazyListState(),
     cards: List<CardUiModel>,
     isPreview: Boolean = false,
-    onCardClick: ((CardUiModel, Int) -> Unit)? = null,
+    onCardClick: ((CardUiModel, Int) -> Unit),
 ) {
     val edgeFadeState = rememberEdgeFadeState(listState)
 
@@ -76,7 +76,7 @@ fun CardList(
                                 .fillMaxWidth()
                                 .align(Alignment.Center),
                             isPreview = isPreview,
-                            onClickCard = { onCardClick?.invoke(card, index) },
+                            onClickCard = { onCardClick(card, index) },
                         )
 
                         // logo overlay on top center
