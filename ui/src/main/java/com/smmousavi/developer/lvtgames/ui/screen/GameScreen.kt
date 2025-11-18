@@ -1,6 +1,5 @@
 package com.smmousavi.developer.lvtgames.ui.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,7 +32,6 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSp
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
 import com.smmousavi.developer.lvtgames.feature.game.components.Board
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,

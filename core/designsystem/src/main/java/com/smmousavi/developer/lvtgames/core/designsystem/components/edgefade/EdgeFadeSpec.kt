@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -18,6 +19,6 @@ data class EdgeFadeSpec(
 val LocalEdgeFadeSpec = staticCompositionLocalOf { EdgeFadeSpec() }
 
 @Composable
-fun ProvideEdgeFadeSpec(spec: EdgeFadeSpec, content: @Composable () -> Unit) {
+fun ProvideEdgeFadeSpec(spec: EdgeFadeSpec, content: @Composable @UiComposable () -> Unit) {
     CompositionLocalProvider(LocalEdgeFadeSpec provides spec, content = content)
 }

@@ -1,6 +1,5 @@
 package com.smmousavi.developer.lvtgames.feature.game.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Board(
     modifier: Modifier = Modifier,

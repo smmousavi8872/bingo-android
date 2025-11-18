@@ -1,6 +1,5 @@
 package com.smmousavi.developer.lvtgames.feature.game.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,9 +21,7 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.Ed
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.ProvideEdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.rememberEdgeFadeState
-import com.smmousavi.developer.lvtgames.core.model.domain.game.Board
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun CardList(
     modifier: Modifier = Modifier,
