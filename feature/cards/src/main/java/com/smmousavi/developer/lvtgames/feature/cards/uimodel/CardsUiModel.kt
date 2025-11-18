@@ -1,18 +1,22 @@
 package com.smmousavi.developer.lvtgames.feature.cards.uimodel
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import kotlin.Int
 
+@Immutable
 data class CardsUiModel(
     val cards: List<CardUiModel>,
 )
 
+@Immutable
 data class CardUiModel(
     val id: Int,
     val name: String,
     val board: List<List<CellUiModel>>,
     val bet: Int,
-    val colors: CardColors,
+    val colors: CardUiColors,
 ) {
     companion object {
         val DEFAULT = CardUiModel(
@@ -20,13 +24,15 @@ data class CardUiModel(
             name = "Card 1",
             board = defaultBoard(),
             bet = 2100,
-            colors = CardColors.DEFAULT
+            colors = CardUiColors.DEFAULT
         )
     }
 }
 
+@Immutable
 data class PrizeUiModel(
     val id: Int,
+    val cardId: Int,
     val title: String,
     val amount: Int,
     val type: String?,
@@ -35,6 +41,7 @@ data class PrizeUiModel(
     companion object {
         val DEFAULT = PrizeUiModel(
             id = 1,
+            cardId = 1,
             title = "First Five",
             amount = 100,
             type = "cash",
@@ -43,35 +50,37 @@ data class PrizeUiModel(
     }
 }
 
+@Immutable
 data class CellUiModel(
     val position: Pair<Int, Int>,
     val value: Int,
     val prize: PrizeUiModel?,
-    val colors: CellColors,
+    val colors: CellUiColors,
 ) {
     companion object {
         val DEFAULT_VALUE = CellUiModel(
             position = 0 to 0,
             value = 73,
             prize = null,
-            colors = CellColors.DEFAULT
+            colors = CellUiColors.DEFAULT
         )
         val DEFAULT_EMPTY = CellUiModel(
             position = 0 to 0,
             value = -1,
             prize = null,
-            colors = CellColors.DEFAULT
+            colors = CellUiColors.DEFAULT
         )
         val DEFAULT_PRIZE = CellUiModel(
             position = 0 to 0,
             value = 32,
             prize = PrizeUiModel.DEFAULT,
-            colors = CellColors.DEFAULT
+            colors = CellUiColors.DEFAULT
         )
     }
 }
 
-data class CardColors(
+@Immutable
+data class CardUiColors(
     val background: Color,
     val startGradient: Color,
     val midGradient: Color,
@@ -80,7 +89,7 @@ data class CardColors(
     val borderColor: Color,
 ) {
     companion object {
-        val DEFAULT = CardColors(
+        val DEFAULT = CardUiColors(
             background = Color(0xff54c62f),
             startGradient = Color(0xff2f8201),
             midGradient = Color(0xff54c62f),
@@ -91,7 +100,8 @@ data class CardColors(
     }
 }
 
-data class CellColors(
+@Immutable
+data class CellUiColors(
     val background: Color,
     val textOnValue: Color,
     val textOnPrize: Color,
@@ -102,7 +112,7 @@ data class CellColors(
     val selectedOverlay: Color? = null,
 ) {
     companion object {
-        val DEFAULT = CellColors(
+        val DEFAULT = CellUiColors(
             background = Color(0xff54c62f),
             textOnValue = Color(0xff3d7b31),
             textOnPrize = Color(0xFF428C35),

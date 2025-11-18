@@ -40,6 +40,17 @@ fun CardsModel.asPrizeEntity(): List<PrizeEntity> = cards.flatMap { card ->
     }
 }
 
+fun CardsModel.Prize.asEntity(): PrizeEntity =
+    PrizeEntity(
+        pk = 0,                 // autoGenerate, Room will assign
+        cardId = cardId,
+        id = id,
+        title = title,
+        amount = amount,
+        type = type,
+        number = number,
+    )
+
 fun List<CardWithPrizesEntity>.asCardsModel(json: Json): CardsModel = CardsModel(
     cards = this.map { cardPrize ->
         val matrix: List<List<Int>> = json.decodeFromString(cardPrize.card.matrixJson)
@@ -50,6 +61,7 @@ fun List<CardWithPrizesEntity>.asCardsModel(json: Json): CardsModel = CardsModel
             prizes = cardPrize.prizes.map { prize ->
                 CardsModel.Prize(
                     id = prize.id,
+                    cardId = cardPrize.card.id,
                     title = prize.title,
                     amount = prize.amount,
                     type = prize.type,

@@ -62,6 +62,17 @@ class DefaultCardsRepository(
             .flowOn(dispatcher)
     }
 
+    override suspend fun addCardPrize(prize: CardsModel.Prize): Result<Unit> = runCatching {
+        localDataSource.insertCellPrize(prize)
+    }
+
+    override suspend fun deleteCardPrize(
+        cardId: Int,
+        prizeId: Int,
+    ): Result<Unit> = runCatching {
+        localDataSource.deleteCellPrize(cardId, prizeId)
+    }
+
     /**
      * Fetches new data from network, updates cache, returns success/failure.
      */

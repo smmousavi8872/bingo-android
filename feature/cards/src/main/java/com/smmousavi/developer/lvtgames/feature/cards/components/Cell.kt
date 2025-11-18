@@ -1,15 +1,14 @@
 package com.smmousavi.developer.lvtgames.feature.cards.components
 
-
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +20,20 @@ import androidx.compose.ui.unit.sp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+
+/**
+ * Visual style for a [Cell].
+ * - Square: a simple rounded square cell, used for the board grid.
+ * - Token: a circular badge with concentric rings used to show marked numbers.
+ */
+@Immutable
+enum class CellStyle { Empty, Prize, Value }
+
+/**
+ * State of a [Cell] for coloring/decoration logic.
+ */
+@Immutable
+enum class CellState { Normal, Highlighted, Selected, Disabled }
 
 /**
  * A single **board cell** displaying either a number, a prize token, or an empty slot.
@@ -54,56 +67,89 @@ fun Cell(
     cellSize: Dp = 64.dp,
     onClickCell: ((CellUiModel) -> Unit)?,
 ) {
-    val baseBackground = when (style) {
-        CellStyle.Empty -> cellModel.colors.background
-        CellStyle.Prize -> Color.White
-        CellStyle.Value -> Color.White
+    val isDisabled = state == CellState.Disabled
+
+    // Base background depends only on style + model colors
+    val baseBackground = remember(style, cellModel.colors.background) {
+        when (style) {
+            CellStyle.Empty -> cellModel.colors.background
+            CellStyle.Prize -> Color.White
+            CellStyle.Value -> Color.White
+        }
     }
 
+    // Animated background driven only by disabled state changes
+    val targetBackground = remember(baseBackground, isDisabled) {
+        if (isDisabled) baseBackground.copy(alpha = 0.5f) else baseBackground
+    }
     val backgroundAnim by animateColorAsState(
-        targetValue = if (state == CellState.Disabled)
-            baseBackground.copy(alpha = 0.5f)
-        else baseBackground,
+        targetValue = targetBackground,
         label = "cell-bg"
     )
 
-    val strokeOuter = (cellSize * 0.08f).coerceAtLeast(1.dp)
-    val strokeInner = (cellSize * 0.06f).coerceAtLeast(0.8.dp)
-    val borderWidth = (cellSize * 0.01f).coerceAtLeast(0.5.dp)
+    // Precompute sizes from cellSize once
+    val strokeOuter = remember(cellSize) { (cellSize * 0.08f).coerceAtLeast(1.dp) }
+    val strokeInner = remember(cellSize) { (cellSize * 0.06f).coerceAtLeast(0.8.dp) }
+    val borderWidth = remember(cellSize) { (cellSize * 0.01f).coerceAtLeast(0.5.dp) }
 
-    val fillColor = if (style == CellStyle.Prize) cellModel.colors.prizeInnerFill else null
+    // Prize fill color (only relevant for prize style)
+    val fillColor = remember(style, cellModel.colors.prizeInnerFill) {
+        if (style == CellStyle.Prize) cellModel.colors.prizeInnerFill else null
+    }
 
-    val outerRingSpec = if (style == CellStyle.Prize)
-        RingSpec(
-            color = cellModel.colors.prizeOuterRing.let { c ->
-                if (state == CellState.Disabled) c.copy(alpha = 0.5f) else c
-            },
-            width = strokeOuter,
-            radiusRatio = 0.38f
-        ) else null
+    // Outer & inner ring specs: only created when style == Prize
+    val outerRingSpec = remember(style, state, cellModel.colors.prizeOuterRing, strokeOuter) {
+        if (style == CellStyle.Prize) {
+            val c = cellModel.colors.prizeOuterRing
+            RingSpec(
+                color = if (isDisabled) c.copy(alpha = 0.5f) else c,
+                width = strokeOuter,
+                radiusRatio = 0.38f
+            )
+        } else null
+    }
 
-    val innerRingSpec = if (style == CellStyle.Prize)
-        RingSpec(
-            color = cellModel.colors.prizeInnerRing.let { c ->
-                if (state == CellState.Disabled) c.copy(alpha = 0.5f) else c
-            },
-            width = strokeInner,
-            radiusRatio = 0.30f
-        ) else null
+    val innerRingSpec = remember(style, state, cellModel.colors.prizeInnerRing, strokeInner) {
+        if (style == CellStyle.Prize) {
+            val c = cellModel.colors.prizeInnerRing
+            RingSpec(
+                color = if (isDisabled) c.copy(alpha = 0.5f) else c,
+                width = strokeInner,
+                radiusRatio = 0.30f
+            )
+        } else null
+    }
+
+    // Text color derived from style + state
+    val textColor = remember(style, state, cellModel.colors) {
+        val base = when (style) {
+            CellStyle.Prize -> cellModel.colors.textOnPrize
+            CellStyle.Value -> cellModel.colors.textOnValue
+            CellStyle.Empty -> Color.Transparent
+        }
+        if (isDisabled) base.copy(alpha = 0.5f) else base
+    }
+
+    // Font size scales with the cell size and style
+    val fontSize = remember(cellSize, style) {
+        if (style == CellStyle.Prize) {
+            (cellSize.value * 0.35f).sp
+        } else {
+            (cellSize.value * 0.5f).sp
+        }
+    }
+
+    // Single, stable click lambda passed down, or null when disabled / no handler
+    val ringClick: (() -> Unit)? = remember(onClickCell, cellModel, isDisabled) {
+        if (onClickCell != null && !isDisabled) {
+            { onClickCell(cellModel) }
+        } else {
+            null
+        }
+    }
 
     Surface(
-        modifier = modifier
-            .size(cellSize)
-            .then(
-                if (onClickCell != null) {
-                    Modifier.clickable(
-                        enabled = state != CellState.Disabled,
-                        onClick = { onClickCell(cellModel) }
-                    )
-                } else {
-                    Modifier
-                }
-            ),
+        modifier = modifier.size(cellSize),
         color = Color.Transparent
     ) {
         RingButton(
@@ -114,39 +160,29 @@ fun Cell(
             filledCircleColor = fillColor,
             outerRing = outerRingSpec,
             innerRing = innerRingSpec,
-            onClick = onClickCell?.let { { it(cellModel) } }
+            onClick = ringClick
         ) {
             if (cellModel.value >= 0) {
-                val textColor = when (style) {
-                    CellStyle.Prize -> cellModel.colors.textOnPrize
-                    CellStyle.Value -> cellModel.colors.textOnValue
-                    CellStyle.Empty -> Color.Transparent
-                }.let { if (state == CellState.Disabled) it.copy(alpha = 0.5f) else it }
-
                 Text(
                     text = cellModel.value.toString(),
                     color = textColor,
-                    fontSize = if (style == CellStyle.Prize) (cellSize.value * 0.35f).sp
-                    else (cellSize.value * 0.5f).sp,
+                    fontSize = fontSize,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
             }
-
-            when (state) {
-                CellState.Highlighted -> cellModel.colors.highlightOverlay
-                CellState.Selected -> cellModel.colors.selectedOverlay
-                else -> null
-            }?.let {
-                // simple overlay rectangle on top of content if desired
-                Box(
-                    Modifier
-                        .matchParentSize()
-                        .background(it)
-                )
-            }
         }
     }
+}
+
+fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
+    if (cellUiModel.value >= 0) {
+        CellStyle.Value
+    } else {
+        CellStyle.Empty
+    }
+} else {
+    CellStyle.Prize
 }
 
 @Preview(showBackground = true)
@@ -154,7 +190,6 @@ fun Cell(
 private fun ValueCellPreview() {
     Cell(
         cellModel = CellUiModel.DEFAULT_VALUE,
-        style = CellStyle.Value,
         onClickCell = {}
     )
 }
@@ -178,4 +213,3 @@ private fun EmptyCellPreview() {
         onClickCell = {}
     )
 }
-

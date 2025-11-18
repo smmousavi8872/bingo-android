@@ -16,7 +16,8 @@ fun CardsDto.asDomainModel(): CardsModel {
             matrix = safeMatrix,
             prizes = (card.prizes ?: emptyList()).map { prize ->
                 CardsModel.Prize(
-                    id = prize.id ?: 0,
+                    id = prize.id ?: -1,
+                    cardId = card.id ?: -1,
                     title = prize.title ?: "",
                     amount = prize.amount ?: 0,
                     type = prize.type ?: "",

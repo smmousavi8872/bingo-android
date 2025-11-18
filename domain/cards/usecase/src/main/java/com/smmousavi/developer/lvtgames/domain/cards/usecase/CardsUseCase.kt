@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 interface CardsUseCase {
     suspend operator fun invoke(): Flow<Result<CardsModel>>
 
+    suspend fun addCardPrize(prize: CardsModel.Prize): Result<Unit>
+
+    suspend fun deleteCardPrize(cardId: Int, prizeId: Int): Result<Unit>
+
     suspend fun refresh(): Result<Unit>
 
 }

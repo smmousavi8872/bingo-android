@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 interface CardsLocalDataSource {
 
     fun observe(): Flow<CardsModel>
-    
+
     suspend fun upsert(snapshot: CardsModel): Result<Unit>
+
+    suspend fun insertCellPrize(prize: CardsModel.Prize): Result<Unit>
+
+    suspend fun deleteCellPrize(cardId: Int, prizeId: Int): Result<Unit>
 }

@@ -1,6 +1,5 @@
 package com.smmousavi.developer.lvtgames.feature.game.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.components.Card
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
@@ -22,17 +22,23 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.Ed
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.ProvideEdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.rememberEdgeFadeState
+import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun CardList(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues = PaddingValues(12.dp),
+    itemSpace: Dp = 8.dp,
     listState: LazyListState = rememberLazyListState(),
-    cards: List<CardUiModel>,
-    onCardClick: (CardUiModel, Int) -> Unit,
+    cardsModel: CardsUiModel,
+    isPreview: Boolean = false,
+    onCardClick: ((CardUiModel, Int) -> Unit),
+    onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
 ) {
     val edgeFadeState = rememberEdgeFadeState(listState)
+    val logoPainter = painterResource(id = R.drawable.logo)
 
     ProvideEdgeFadeSpec(
         EdgeFadeSpec(
@@ -44,7 +50,7 @@ fun CardList(
     ) {
         EdgeFadeContainer(
             modifier = modifier
-                .wrapContentWidth()
+                .fillMaxWidth()
                 .fillMaxHeight(),
             contentPadding = contentPadding,
             topFadeStrength = edgeFadeState.top.value,
@@ -52,32 +58,37 @@ fun CardList(
         ) {
             LazyColumn(
                 state = listState,
-                modifier = Modifier.wrapContentSize(),
-                contentPadding = PaddingValues(top = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.spacedBy(itemSpace),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(
-                    items = cards,
-                ) { index, model ->
+                    items = cardsModel.cards,
+                    key = { _, card -> card.id }
+                ) { index, card ->
                     BoxWithConstraints(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         // scale logo by card width
                         val logoSize = maxWidth * 0.20f // 20% of card width
-                        val logoOverlap = logoSize * 0.24f // overlap upward by 26% of logo size
+                        val logoOverlap = logoSize * 0.36f // overlap upward by ~36% of logo size
+
                         Card(
-                            cardModel = model,
+                            cardModel = card,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.Center),
-                            onClickCard = { onCardClick(model, index) },
-                            onClickCell = { }
+                            isPreview = isPreview,
+                            onCardClicked = { onCardClick(card, index) },
+                            onCellClicked = { cardId, cellModel, style ->
+                                onCellClicked(cardId, cellModel, style)
+                            }
                         )
+
                         // logo overlay on top center
                         Image(
-                            painter = painterResource(id = R.drawable.logo),
+                            painter = logoPainter,
                             contentDescription = "Game Logo",
                             modifier = Modifier
                                 .size(logoSize)
@@ -95,35 +106,38 @@ fun CardList(
 @Preview(showBackground = true)
 @Composable
 fun PreviewCardList() {
-    val mockCards = listOf(
-        CardUiModel.DEFAULT,
-        CardUiModel.DEFAULT.copy(
-            id = 2,
-            name = "Card 2",
-            colors = CardUiModel.DEFAULT.colors.copy(
-                background = Color(0xFFC345A6),
-                startGradient = Color(0xFFE939DE),
-                midGradient = Color(0xFF076D18),
-                endGradient = Color(0xFF652146)
-            )
-        ),
-        CardUiModel.DEFAULT.copy(
-            id = 3,
-            name = "Card 3",
-            colors = CardUiModel.DEFAULT.colors.copy(
-                background = Color(0xFF579294),
-                startGradient = Color(0xFF4ACCB0),
-                midGradient = Color(0xFF46279A),
-                endGradient = Color(0xFF717B03)
+    val mockCards = CardsUiModel(
+        cards = listOf(
+            CardUiModel.DEFAULT,
+            CardUiModel.DEFAULT.copy(
+                id = 2,
+                name = "Card 2",
+                colors = CardUiModel.DEFAULT.colors.copy(
+                    background = Color(0xFFC345A6),
+                    startGradient = Color(0xFFE939DE),
+                    midGradient = Color(0xFF076D18),
+                    endGradient = Color(0xFF652146)
+                )
+            ),
+            CardUiModel.DEFAULT.copy(
+                id = 3,
+                name = "Card 3",
+                colors = CardUiModel.DEFAULT.colors.copy(
+                    background = Color(0xFF579294),
+                    startGradient = Color(0xFF4ACCB0),
+                    midGradient = Color(0xFF46279A),
+                    endGradient = Color(0xFF717B03)
+                )
             )
         )
     )
 
     CardList(
-        cards = mockCards,
+        cardsModel = mockCards,
         listState = rememberLazyListState(),
         onCardClick = { selected, index ->
             println("Clicked card: ${selected.name}, index = $index")
-        }
+        },
+        onCellClicked = { _, _, _ -> },
     )
 }
