@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,24 +27,93 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smmousavi.developer.lvtgames.core.designsystem.R
+import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
+import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.newPrize
 import com.smmousavi.developer.lvtgames.feature.game.components.Board
+import org.koin.androidx.compose.koinViewModel
 
+@Composable
+fun LoadingScreen() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.splash),
+            contentDescription = "Game Board Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        StylousText(
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .align(Alignment.BottomCenter),
+            text = "Loading Cards...",
+            fontSize = 20.sp
+        )
+    }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        StylousText(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .align(Alignment.Center),
+            text = message,
+        )
+    }
+}
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    cards: List<CardUiModel>,
-//    selectedCard: CardUiModel,
-
+    cards: CardsUiModel,
+    viewModel: CardsViewModel = koinViewModel(),
 ) {
+    val backgroundPainter = painterResource(id = R.drawable.background)
+    val medalPainter = painterResource(id = R.drawable.ic_bingo_medal)
+    val chatPainter = painterResource(id = R.drawable.ic_bingo_chat)
+
+    val onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit =
+        remember(viewModel) {
+            { cardId, cellModel, style ->
+                when (style) {
+                    CellStyle.Value -> {
+                        viewModel.addCardPrize(
+                            newPrize(
+                                cardId = cardId,
+                                number = cellModel.value
+                            )
+                        )
+                    }
+
+                    CellStyle.Prize -> {
+                        cellModel.prize?.id?.let { prizeId ->
+                            viewModel.deleteCardPrize(
+                                cardId = cardId,
+                                prizeId = prizeId,
+                            )
+                        }
+                    }
+
+                    CellStyle.Empty -> {
+                        // No-op
+                    }
+                }
+            }
+        }
+
     BoxWithConstraints(
         modifier = modifier.fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.background),
+            painter = backgroundPainter,
             contentDescription = "Game Board Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -83,7 +153,7 @@ fun GameScreen(
                 ) {
                     Icon(
                         modifier = Modifier.size(32.dp),
-                        painter = painterResource(R.drawable.ic_bingo_medal),
+                        painter = medalPainter,
                         contentDescription = "Score Icon",
                         tint = Color(0xFF7A2C23)
                     )
@@ -106,7 +176,7 @@ fun GameScreen(
                 ) {
                     Icon(
                         modifier = Modifier.size(42.dp),
-                        painter = painterResource(R.drawable.ic_bingo_chat),
+                        painter = chatPainter,
                         contentDescription = "Chat Icon",
                         tint = Color(0xFF7A2C23)
                     )
@@ -114,13 +184,16 @@ fun GameScreen(
             }
 
             Board(
-                cards = cards,
-//        selectedCard = selectedCard,
+                cardsModel = cards,
+                onCellClicked = onCellClicked
             )
         }
     }
 }
 
+/**
+ * Decorative top arch header used above the board.
+ */
 @Composable
 fun TopArch(
     modifier: Modifier = Modifier,

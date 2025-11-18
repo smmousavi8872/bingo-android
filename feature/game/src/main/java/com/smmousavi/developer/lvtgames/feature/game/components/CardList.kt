@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.components.Card
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
@@ -28,7 +29,8 @@ import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 @Composable
 fun CardList(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues = PaddingValues(12.dp),
+    itemSpace: Dp = 8.dp,
     listState: LazyListState = rememberLazyListState(),
     cardsModel: CardsUiModel,
     isPreview: Boolean = false,
@@ -57,8 +59,8 @@ fun CardList(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(top = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.spacedBy(itemSpace),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(

@@ -133,9 +133,6 @@ fun CardUiColors.asDomainCardColors(
     )
 }
 
-/**
- * Helper to create a new prize from UI.
- */
 fun newPrize(cardId: Int, number: Int) =
     PrizeUiModel(
         id = Random.nextInt(0, 100),
@@ -146,9 +143,46 @@ fun newPrize(cardId: Int, number: Int) =
         number = number
     )
 
-/**
- * Utility extensions
- */
+
+fun CardsUiModel.withPrize(prize: PrizeUiModel): CardsUiModel =
+    copy(
+        cards = cards.map { card ->
+            if (card.id != prize.cardId) card else card.withPrize(prize)
+        }
+    )
+
+fun CardUiModel.withPrize(prize: PrizeUiModel): CardUiModel =
+    copy(
+        board = board.map { row ->
+            row.map { cell ->
+                if (cell.value == prize.number) {
+                    cell.copy(prize = prize)
+                } else {
+                    cell
+                }
+            }
+        }
+    )
+
+fun CardsUiModel.withoutPrize(cardId: Int, prizeId: Int): CardsUiModel =
+    copy(
+        cards = cards.map { card ->
+            if (card.id != cardId) card else card.withoutPrize(prizeId)
+        }
+    )
+
+fun CardUiModel.withoutPrize(prizeId: Int): CardUiModel =
+    copy(
+        board = board.map { row ->
+            row.map { cell ->
+                if (cell.prize?.id == prizeId) {
+                    cell.copy(prize = null)
+                } else {
+                    cell
+                }
+            }
+        }
+    )
 
 private fun Color.toHex(): String =
     "#%02X%02X%02X".format(

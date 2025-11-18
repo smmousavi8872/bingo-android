@@ -1,5 +1,6 @@
 package com.smmousavi.developer.lvtgames.feature.game.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,8 @@ fun Board(
         // Main cards list (interactive)
         CardList(
             modifier = Modifier.weight(0.7f),
+            contentPadding = PaddingValues(top = 16.dp),
+            itemSpace = 24.dp,
             cardsModel = cardsModel,
             isPreview = false,
             listState = mainListState,
@@ -47,6 +50,8 @@ fun Board(
         // Preview list (read-only)
         CardList(
             modifier = Modifier.weight(0.3f),
+            contentPadding = PaddingValues(top = 8.dp),
+            itemSpace = 8.dp,
             cardsModel = cardsModel,
             isPreview = true,
             onCardClick = { _, index ->

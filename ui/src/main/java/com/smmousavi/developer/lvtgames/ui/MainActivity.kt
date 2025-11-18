@@ -5,10 +5,20 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.smmousavi.developer.lvtgames.ui.screen.SplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.smmousavi.developer.lvtgames.core.designsystem.UiState
+import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
+import com.smmousavi.developer.lvtgames.ui.screen.ErrorScreen
+import com.smmousavi.developer.lvtgames.ui.screen.GameScreen
+import com.smmousavi.developer.lvtgames.ui.screen.LoadingScreen
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,8 +31,23 @@ class MainActivity : ComponentActivity() {
         controller.hide(WindowInsetsCompat.Type.systemBars())
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
         setContent {
-            SplashScreen()
+            val viewModel: CardsViewModel = koinViewModel()
+            val state = viewModel.state.collectAsStateWithLifecycle(initialValue = UiState.Loading)
+            LaunchedEffect(Unit) {
+                delay(1000) // just to make sure is displayed
+                viewModel.observeCards()
+            }
+            Box {
+                when (val cardsState = state.value) {
+                    is UiState.Loading -> LoadingScreen()
+                    is UiState.Error -> ErrorScreen(cardsState.message)
+                    is UiState.Success -> GameScreen(
+                        cards = cardsState.data,
+                    )
+                }
+            }
         }
     }
 }
