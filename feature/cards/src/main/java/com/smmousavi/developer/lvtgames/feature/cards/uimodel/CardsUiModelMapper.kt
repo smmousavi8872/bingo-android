@@ -5,8 +5,8 @@ import androidx.core.graphics.toColorInt
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import kotlin.random.Random
 
-fun CardsModel.asUiModel(): CardsUiModel =
-    CardsUiModel(
+fun CardsModel.asUiModel(): CardsListUiModel =
+    CardsListUiModel(
         cards = cards.map { it.asUiModel() }
     )
 
@@ -69,7 +69,7 @@ fun List<List<Int>>.asBoard(
     }
 }
 
-fun CardsUiModel.asDomainModel(): CardsModel =
+fun CardsListUiModel.asDomainModel(): CardsModel =
     CardsModel(
         cards = cards.map { it.asDomainModel() }
     )
@@ -144,7 +144,7 @@ fun newPrize(cardId: Int, number: Int) =
     )
 
 
-fun CardsUiModel.withPrize(prize: PrizeUiModel): CardsUiModel =
+fun CardsListUiModel.withPrize(prize: PrizeUiModel): CardsListUiModel =
     copy(
         cards = cards.map { card ->
             if (card.id != prize.cardId) card else card.withPrize(prize)
@@ -164,7 +164,7 @@ fun CardUiModel.withPrize(prize: PrizeUiModel): CardUiModel =
         }
     )
 
-fun CardsUiModel.withoutPrize(cardId: Int, prizeId: Int): CardsUiModel =
+fun CardsListUiModel.withoutPrize(cardId: Int, prizeId: Int): CardsListUiModel =
     copy(
         cards = cards.map { card ->
             if (card.id != cardId) card else card.withoutPrize(prizeId)

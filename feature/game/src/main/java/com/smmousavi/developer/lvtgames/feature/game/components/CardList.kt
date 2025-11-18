@@ -23,7 +23,7 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.Ed
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.ProvideEdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.rememberEdgeFadeState
 import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 
 @Composable
@@ -32,7 +32,7 @@ fun CardList(
     contentPadding: PaddingValues = PaddingValues(12.dp),
     itemSpace: Dp = 8.dp,
     listState: LazyListState = rememberLazyListState(),
-    cardsModel: CardsUiModel,
+    cardsModel: CardsListUiModel,
     isPreview: Boolean = false,
     onCardClick: ((CardUiModel, Int) -> Unit),
     onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
@@ -106,7 +106,7 @@ fun CardList(
 @Preview(showBackground = true)
 @Composable
 fun PreviewCardList() {
-    val mockCards = CardsUiModel(
+    val mockCards = CardsListUiModel(
         cards = listOf(
             CardUiModel.DEFAULT,
             CardUiModel.DEFAULT.copy(
