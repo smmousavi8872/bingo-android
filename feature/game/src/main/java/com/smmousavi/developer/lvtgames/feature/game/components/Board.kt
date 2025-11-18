@@ -25,7 +25,6 @@ fun Board(
     cards: List<CardUiModel>,
 //    selectedCard: CardUiModel,
 ) {
-    var currentCard by remember { mutableStateOf(cards[0]) }
     val coroutineScope = rememberCoroutineScope()
     val cardListState = rememberLazyListState()
 
@@ -33,21 +32,22 @@ fun Board(
         modifier = modifier.fillMaxSize(),
         verticalAlignment = Alignment.Bottom,
     ) {
+        // Cards list
         CardList(
-            modifier = Modifier.weight(0.75f),
+            modifier = Modifier.weight(0.7f),
             cards = cards,
+            isPreview = false,
             listState = cardListState,
-            onCardClick = { _, _ ->
-            }
         )
 
         Spacer(modifier = modifier.size(16.dp))
 
+        // Preview list
         CardList(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.3f),
             cards = cards,
+            isPreview = true,
             onCardClick = { card, index ->
-                currentCard = card
                 coroutineScope.launch {
                     cardListState.scrollToItem(index, 0)
                 }

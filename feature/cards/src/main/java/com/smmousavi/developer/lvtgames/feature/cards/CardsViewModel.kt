@@ -3,8 +3,11 @@ package com.smmousavi.developer.lvtgames.feature.cards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
+import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PrizeUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toDomainPrize
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +33,18 @@ class CardsViewModel(
                         _state.value = UiState.Error(e.message ?: "Unknown error", e)
                     }
             }
+        }
+    }
+
+    fun addCardPrize(prize: PrizeUiModel) {
+        viewModelScope.launch {
+            useCase.addCardPrize(prize.toDomainPrize())
+        }
+    }
+
+    fun deleteCardPrize(cardId: Int, prizeId: Int) {
+        viewModelScope.launch {
+            useCase.deleteCardPrize(cardId = cardId, prizeId = prizeId)
         }
     }
 }

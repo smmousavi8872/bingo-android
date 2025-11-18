@@ -7,5 +7,9 @@ interface CardsRepository {
 
     fun observeCards(): Flow<Result<CardsModel>>
 
+    suspend fun addCardPrize(prize: CardsModel.Prize): Result<Unit>
+
+    suspend fun deleteCardPrize(cardId: Int, prizeId: Int): Result<Unit>
+
     suspend fun refresh(): Result<Unit>
 }

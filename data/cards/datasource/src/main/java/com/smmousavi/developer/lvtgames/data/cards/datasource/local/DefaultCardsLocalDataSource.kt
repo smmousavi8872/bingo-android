@@ -2,6 +2,7 @@ package com.smmousavi.developer.lvtgames.data.cards.datasource.local
 
 import com.smmousavi.developer.lvtgames.core.database.asCardEntity
 import com.smmousavi.developer.lvtgames.core.database.asCardsModel
+import com.smmousavi.developer.lvtgames.core.database.asEntity
 import com.smmousavi.developer.lvtgames.core.database.asPrizeEntity
 import com.smmousavi.developer.lvtgames.core.database.dao.CardsRoomDao
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
@@ -40,4 +41,17 @@ class DefaultCardsLocalDataSource(
         dao.clearPrizes()
         dao.insertPrizes(prizes)
     }
+
+    override suspend fun insertCellPrize(prize: CardsModel.Prize): Result<Unit> =
+        runCatching {
+            dao.insertPrize(prize.asEntity())
+        }
+
+    override suspend fun deleteCellPrize(
+        cardId: Int,
+        prizeId: Int,
+    ): Result<Unit> =
+        runCatching {
+            dao.deletePrize(cardId = cardId, prizeId = prizeId)
+        }
 }

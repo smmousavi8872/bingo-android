@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +27,19 @@ import androidx.compose.ui.unit.sp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+
+/**
+ * Visual style for a [Cell].
+ * - Square: a simple rounded square cell, used for the board grid.
+ * - Token: a circular badge with concentric rings used to show marked numbers.
+ */
+enum class CellStyle { Empty, Prize, Value }
+
+/**
+ * State of a [Cell] for coloring/decoration logic.
+ */
+enum class CellState { Normal, Highlighted, Selected, Disabled }
+
 
 /**
  * A single **board cell** displaying either a number, a prize token, or an empty slot.
@@ -54,6 +73,7 @@ fun Cell(
     cellSize: Dp = 64.dp,
     onClickCell: ((CellUiModel) -> Unit)?,
 ) {
+
     val baseBackground = when (style) {
         CellStyle.Empty -> cellModel.colors.background
         CellStyle.Prize -> Color.White
@@ -134,27 +154,32 @@ fun Cell(
             }
 
             when (state) {
-                CellState.Highlighted -> cellModel.colors.highlightOverlay
-                CellState.Selected -> cellModel.colors.selectedOverlay
-                else -> null
-            }?.let {
-                // simple overlay rectangle on top of content if desired
-                Box(
-                    Modifier
-                        .matchParentSize()
-                        .background(it)
-                )
+                CellState.Selected -> {
+
+                }
+
+                else -> {}
             }
         }
     }
 }
+
+fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
+    if (cellUiModel.value >= 0) {
+        CellStyle.Value
+    } else {
+        CellStyle.Empty
+    }
+} else {
+    CellStyle.Prize
+}
+
 
 @Preview(showBackground = true)
 @Composable
 private fun ValueCellPreview() {
     Cell(
         cellModel = CellUiModel.DEFAULT_VALUE,
-        style = CellStyle.Value,
         onClickCell = {}
     )
 }

@@ -31,4 +31,15 @@ interface CardsRoomDao {
 
     @Query("DELETE FROM prizes_table")
     suspend fun clearPrizes()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPrize(prize: PrizeEntity)
+
+    @Query(
+        """
+        DELETE FROM prizes_table 
+        WHERE cardId = :cardId AND id = :prizeId
+        """
+    )
+    suspend fun deletePrize(cardId: Int, prizeId: Int)
 }

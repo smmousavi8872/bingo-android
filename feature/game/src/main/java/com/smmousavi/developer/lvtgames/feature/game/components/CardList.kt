@@ -22,6 +22,7 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.Ed
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.ProvideEdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.rememberEdgeFadeState
+import com.smmousavi.developer.lvtgames.core.model.domain.game.Board
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -30,7 +31,8 @@ fun CardList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState = rememberLazyListState(),
     cards: List<CardUiModel>,
-    onCardClick: (CardUiModel, Int) -> Unit,
+    isPreview: Boolean = false,
+    onCardClick: ((CardUiModel, Int) -> Unit)? = null,
 ) {
     val edgeFadeState = rememberEdgeFadeState(listState)
 
@@ -59,22 +61,24 @@ fun CardList(
             ) {
                 itemsIndexed(
                     items = cards,
-                ) { index, model ->
+                    key = { _, card -> card.id }
+                ) { index, card ->
                     BoxWithConstraints(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         // scale logo by card width
                         val logoSize = maxWidth * 0.20f // 20% of card width
-                        val logoOverlap = logoSize * 0.24f // overlap upward by 26% of logo size
+                        val logoOverlap = logoSize * 0.36f // overlap upward by ~24% of logo size
+
                         Card(
-                            cardModel = model,
+                            cardModel = card,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.Center),
-                            onClickCard = { onCardClick(model, index) },
-                            onClickCell = { }
+                            isPreview = isPreview,
+                            onClickCard = { onCardClick?.invoke(card, index) },
                         )
+
                         // logo overlay on top center
                         Image(
                             painter = painterResource(id = R.drawable.logo),
@@ -124,6 +128,6 @@ fun PreviewCardList() {
         listState = rememberLazyListState(),
         onCardClick = { selected, index ->
             println("Clicked card: ${selected.name}, index = $index")
-        }
+        },
     )
 }

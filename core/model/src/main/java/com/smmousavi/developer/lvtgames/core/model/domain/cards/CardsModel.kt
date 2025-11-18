@@ -14,6 +14,7 @@ data class CardsModel(
 
     data class Prize(
         val id: Int,
+        val cardId: Int,
         val title: String,
         val amount: Int,
         val type: String,

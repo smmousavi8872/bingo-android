@@ -33,22 +33,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
+import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.newPrize
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.floor
 import kotlin.math.max
-
-/**
- * Visual style for a [Cell].
- * - Square: a simple rounded square cell, used for the board grid.
- * - Token: a circular badge with concentric rings used to show marked numbers.
- */
-enum class CellStyle { Empty, Prize, Value }
-
-/**
- * State of a [Cell] for coloring/decoration logic.
- */
-enum class CellState { Normal, Highlighted, Selected, Disabled }
 
 /**
  * A single Bingo Card used inside the **Board** and **CardList**.
@@ -63,8 +53,9 @@ enum class CellState { Normal, Highlighted, Selected, Disabled }
 fun Card(
     modifier: Modifier = Modifier,
     cardModel: CardUiModel,
+    viewModel: CardsViewModel = koinViewModel(),
+    isPreview: Boolean,
     onClickCard: () -> Unit,
-    onClickCell: (CellUiModel) -> Unit,
 ) {
     val cardBrush = rememberHorizontalBrush(
         start = cardModel.colors.startGradient,
@@ -226,11 +217,32 @@ fun Card(
                                 val row = cardModel.board[i]
                                 repeat(colsCount) { j ->
                                     val cellUiModel = row[j]
+                                    val style = getStyle(cellUiModel)
+
                                     Cell(
                                         cellModel = cellUiModel,
                                         cellSize = cellSize,
-                                        style = getStyle(cellUiModel),
-                                        onClickCell = { onClickCell(cellUiModel) }
+                                        style = style,
+                                        onClickCell = {
+                                            if (isPreview.not()) {
+                                                if (style == CellStyle.Value) {
+                                                    viewModel.addCardPrize(
+                                                        newPrize(
+                                                            cardId = cardModel.id,
+                                                            number = cellUiModel.value
+                                                        )
+
+                                                    )
+                                                } else if (style == CellStyle.Prize) {
+                                                    cellUiModel.prize?.id?.let {
+                                                        viewModel.deleteCardPrize(
+                                                            cardId = cardModel.id,
+                                                            prizeId = it,
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
                                     )
                                 }
                             }
@@ -270,23 +282,13 @@ fun rememberHorizontalBrush(
     )
 }
 
-private fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
-    if (cellUiModel.value >= 0) {
-        CellStyle.Value
-    } else {
-        CellStyle.Empty
-    }
-} else {
-    CellStyle.Prize
-}
-
 @Composable
 @Preview(showBackground = true)
 fun CardPreviewSample() {
     Card(
         cardModel = CardUiModel.DEFAULT,
+        isPreview = false,
         onClickCard = { },
-        onClickCell = { }
     )
 }
 
