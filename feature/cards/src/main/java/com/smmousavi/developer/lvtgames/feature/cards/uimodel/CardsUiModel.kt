@@ -1,12 +1,16 @@
 package com.smmousavi.developer.lvtgames.feature.cards.uimodel
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import kotlin.Int
 
+@Immutable
 data class CardsUiModel(
     val cards: List<CardUiModel>,
 )
 
+@Immutable
 data class CardUiModel(
     val id: Int,
     val name: String,
@@ -25,6 +29,7 @@ data class CardUiModel(
     }
 }
 
+@Immutable
 data class PrizeUiModel(
     val id: Int,
     val cardId: Int,
@@ -45,6 +50,7 @@ data class PrizeUiModel(
     }
 }
 
+@Immutable
 data class CellUiModel(
     val position: Pair<Int, Int>,
     val value: Int,
@@ -73,6 +79,7 @@ data class CellUiModel(
     }
 }
 
+@Immutable
 data class CardUiColors(
     val background: Color,
     val startGradient: Color,
@@ -93,6 +100,7 @@ data class CardUiColors(
     }
 }
 
+@Immutable
 data class CellUiColors(
     val background: Color,
     val textOnValue: Color,

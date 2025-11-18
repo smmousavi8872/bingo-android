@@ -1,5 +1,7 @@
 package com.smmousavi.developer.lvtgames.feature.game.uimodel
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.smmousavi.developer.lvtgames.core.model.domain.game.BINGO_MAX_NUMBER
 import com.smmousavi.developer.lvtgames.core.model.domain.game.BINGO_MIN_NUMBER
 import com.smmousavi.developer.lvtgames.core.model.domain.game.Board
@@ -7,12 +9,23 @@ import com.smmousavi.developer.lvtgames.core.model.domain.game.WinCheck
 import com.smmousavi.developer.lvtgames.core.model.domain.game.WinPattern
 import com.smmousavi.developer.lvtgames.core.model.domain.game.checkWins
 
-
+@Stable
 sealed interface DrawMode {
     data object Manual : DrawMode
     data class Auto(val intervalMillis: Long = 1200L) : DrawMode
 }
 
+@Stable
+sealed interface GameAction {
+    data class Start(val board: Board, val mode: DrawMode) : GameAction
+    data object Pause : GameAction
+    data object Resume : GameAction
+    data object Reset : GameAction
+    data class DrawOne(val number: Int) : GameAction
+    data class Fail(val message: String) : GameAction
+}
+
+@Immutable
 data class GameUiModel(
     val board: Board? = null,
     val drawn: Set<Int> = emptySet(),
@@ -23,14 +36,6 @@ data class GameUiModel(
     val errorMessage: String? = null,
 )
 
-sealed interface GameAction {
-    data class Start(val board: Board, val mode: DrawMode) : GameAction
-    data object Pause : GameAction
-    data object Resume : GameAction
-    data object Reset : GameAction
-    data class DrawOne(val number: Int) : GameAction
-    data class Fail(val message: String) : GameAction
-}
 
 fun reduce(state: GameUiModel, action: GameAction, patterns: List<WinPattern>): GameUiModel =
     when (action) {

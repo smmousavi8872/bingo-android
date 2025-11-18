@@ -3,12 +3,11 @@ package com.smmousavi.developer.lvtgames.feature.cards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
-import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PrizeUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toDomainPrize
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.toUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asDomainPrize
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +26,7 @@ class CardsViewModel(
                 result
                     .onSuccess { data ->
                         if (data.cards.isNotEmpty()) _state.value =
-                            UiState.Success(data.toUiModel())
+                            UiState.Success(data.asUiModel())
                     }
                     .onFailure { e ->
                         _state.value = UiState.Error(e.message ?: "Unknown error", e)
@@ -38,7 +37,7 @@ class CardsViewModel(
 
     fun addCardPrize(prize: PrizeUiModel) {
         viewModelScope.launch {
-            useCase.addCardPrize(prize.toDomainPrize())
+            useCase.addCardPrize(prize.asDomainPrize())
         }
     }
 

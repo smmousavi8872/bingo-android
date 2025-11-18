@@ -1,7 +1,5 @@
 package com.smmousavi.developer.lvtgames.feature.cards.components
 
-
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +32,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
-import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.newPrize
-import org.koin.androidx.compose.koinViewModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -48,15 +45,15 @@ import kotlin.math.max
  * - Top-centered game icon overlapping the top edge (negative Y offset).
  * - Grid is built from the card's matrix; each cell is a [Cell].
  */
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
     cardModel: CardUiModel,
-    viewModel: CardsViewModel = koinViewModel(),
     isPreview: Boolean,
-    onClickCard: () -> Unit,
+    onCardClicked: () -> Unit,
+    onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
 ) {
+    // Horizontal gradient is static for a given card → remember it
     val cardBrush = rememberHorizontalBrush(
         start = cardModel.colors.startGradient,
         mid = cardModel.colors.midGradient,
@@ -87,7 +84,7 @@ fun Card(
             maxW = maxWidth,
             maxH = maxHeight,
         )
-        val cellSize: Dp = scale.cell
+        val cellBaseSize: Dp = scale.cell
 
         Box(
             modifier = Modifier
@@ -99,7 +96,7 @@ fun Card(
                     color = cardModel.colors.background.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(8.dp)
                 )
-                .clickable { if (isPreview) onClickCard() }
+                .clickable { if (isPreview) onCardClicked() }
         ) {
             // Rebuild the header row here with scaled fonts/borders
             Column(
@@ -132,14 +129,14 @@ fun Card(
                     VerticalDivider(
                         color = cardModel.colors.background,
                         modifier = Modifier
-                            .height((cellSize * 0.5f).coerceIn(14.dp, 22.dp))
+                            .height((cellBaseSize * 0.5f).coerceIn(14.dp, 22.dp))
                             .width(scale.border)
                             .offset(y = (-4).dp)
                     )
                     VerticalDivider(
                         color = cardModel.colors.borderColor,
                         modifier = Modifier
-                            .height((cellSize * 0.5f).coerceIn(14.dp, 22.dp))
+                            .height((cellBaseSize * 0.5f).coerceIn(14.dp, 22.dp))
                             .width(scale.border)
                             .offset(y = (-4).dp)
                     )
@@ -183,10 +180,11 @@ fun Card(
                                 end = (scale.innerPad),
                                 bottom = (scale.innerPad * 0.25f),
                             ),
-                        size = (cellSize * 0.7f).coerceIn(20.dp, 32.dp)
+                        size = (cellBaseSize * 0.7f).coerceIn(20.dp, 32.dp)
                     )
                 }
 
+                // Grid container
                 BoxWithConstraints(
                     modifier = Modifier
                         .wrapContentWidth()
@@ -199,15 +197,19 @@ fun Card(
                 ) {
                     val colsCount = max(cols, 1)
                     val density = LocalDensity.current
-                    // Compute a safe cellSize using floor(px)
-                    val cellSize: Dp = with(density) {
-                        val maxWpx = maxWidth.toPx()
-                        val cellPx = floor(maxWpx / colsCount)
-                        cellPx.toDp()
-                    }
-                    // Constrain the grid width EXACTLY to cols * cellSize
-                    val gridWidth: Dp = cellSize * colsCount
 
+                    // Compute a safe cellSize once per size/cols
+                    val (cellSize, gridWidth) = with(density) {
+                        remember(maxWidth, colsCount) {
+                            val maxWpx = maxWidth.toPx()
+                            val cellPx = floor(maxWpx / colsCount)
+                            val cellDp = cellPx.toDp()
+                            val gridDp = cellDp * colsCount
+                            cellDp to gridDp
+                        }
+                    }
+
+                    // Constrain the grid width EXACTLY to cols * cellSize
                     Column(
                         modifier = Modifier.width(gridWidth),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -225,24 +227,13 @@ fun Card(
                                         style = style,
                                         onClickCell = {
                                             if (isPreview) {
-                                                onClickCard()
+                                                onCardClicked()
                                             } else {
-                                                if (style == CellStyle.Value) {
-                                                    viewModel.addCardPrize(
-                                                        newPrize(
-                                                            cardId = cardModel.id,
-                                                            number = cellUiModel.value
-                                                        )
-
-                                                    )
-                                                } else if (style == CellStyle.Prize) {
-                                                    cellUiModel.prize?.id?.let {
-                                                        viewModel.deleteCardPrize(
-                                                            cardId = cardModel.id,
-                                                            prizeId = it,
-                                                        )
-                                                    }
-                                                }
+                                                onCellClicked(
+                                                    cardModel.id,
+                                                    cellUiModel,
+                                                    style
+                                                )
                                             }
                                         }
                                     )
@@ -270,18 +261,21 @@ fun rememberHorizontalBrush(
     softness: Float = 0.2f,
 ): Brush {
     val s = softness.coerceIn(0f, 0.45f)
-    val startFeather = lerp(start, mid, 0.55f)
-    val endFeather = lerp(end, mid, 0.55f)
 
-    return Brush.linearGradient(
-        0f to start,
-        s to startFeather, // soften left edge
-        0.5f to mid, // dominant middle
-        1f - s to endFeather, // soften right edge
-        1f to end,
-        start = Offset(0f, 0f), // left
-        end = Offset(1000f, 0f) // right (direction only)
-    )
+    return remember(start, mid, end, s) {
+        val startFeather = lerp(start, mid, 0.55f)
+        val endFeather = lerp(end, mid, 0.55f)
+
+        Brush.linearGradient(
+            0f to start,
+            s to startFeather, // soften left edge
+            0.5f to mid,       // dominant middle
+            1f - s to endFeather, // soften right edge
+            1f to end,
+            start = Offset(0f, 0f),  // left
+            end = Offset(1000f, 0f)  // right (direction only)
+        )
+    }
 }
 
 @Composable
@@ -290,7 +284,7 @@ fun CardPreviewSample() {
     Card(
         cardModel = CardUiModel.DEFAULT,
         isPreview = false,
-        onClickCard = { },
+        onCardClicked = { },
+        onCellClicked = { _, _, _ -> }
     )
 }
-
