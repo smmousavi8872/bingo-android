@@ -1,12 +1,11 @@
 package com.smmousavi.developer.lvtgames.feature.cards.uimodel
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import kotlin.Int
 
 @Immutable
-data class CardsUiModel(
+data class CardsListUiModel(
     val cards: List<CardUiModel>,
 )
 

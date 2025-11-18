@@ -34,7 +34,7 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingBu
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
 import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.newPrize
 import com.smmousavi.developer.lvtgames.feature.game.components.Board
@@ -73,7 +73,7 @@ fun ErrorScreen(message: String) {
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    cards: CardsUiModel,
+    cards: CardsListUiModel,
     viewModel: CardsViewModel = koinViewModel(),
 ) {
     val backgroundPainter = painterResource(id = R.drawable.background)

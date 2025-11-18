@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PrizeUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asDomainPrize
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asUiModel
@@ -20,8 +20,8 @@ class CardsViewModel(
     private val useCase: CardsUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<UiState<CardsUiModel>>(UiState.Loading)
-    val state: StateFlow<UiState<CardsUiModel>> = _state.asStateFlow()
+    private val _state = MutableStateFlow<UiState<CardsListUiModel>>(UiState.Loading)
+    val state: StateFlow<UiState<CardsListUiModel>> = _state.asStateFlow()
 
     // Keep the last domain snapshot to avoid remapping identical data
     private var latestDomain: CardsModel? = null
@@ -55,7 +55,7 @@ class CardsViewModel(
 
     /**
      * Optimistic UI update + persist through use case.
-     * We first update the current UiState, then trigger domain update.
+     * First update the current UiState, then trigger domain update.
      */
     fun addCardPrize(prize: PrizeUiModel) {
         // Optimistic UI update
@@ -77,7 +77,7 @@ class CardsViewModel(
         }
     }
 
-    private inline fun updateUi(transform: (CardsUiModel) -> CardsUiModel) {
+    private inline fun updateUi(transform: (CardsListUiModel) -> CardsListUiModel) {
         val current = _state.value
         if (current is UiState.Success) {
             _state.value = UiState.Success(transform(current.data))
