@@ -2,7 +2,7 @@ package com.smmousavi.developer.lvtgames.feature.game.uimodel
 
 import com.smmousavi.developer.lvtgames.core.model.domain.game.BINGO_MAX_NUMBER
 import com.smmousavi.developer.lvtgames.core.model.domain.game.BINGO_MIN_NUMBER
-import com.smmousavi.developer.lvtgames.core.model.domain.game.GameBoard
+import com.smmousavi.developer.lvtgames.core.model.domain.game.Board
 import com.smmousavi.developer.lvtgames.core.model.domain.game.WinCheck
 import com.smmousavi.developer.lvtgames.core.model.domain.game.WinPattern
 import com.smmousavi.developer.lvtgames.core.model.domain.game.checkWins
@@ -14,7 +14,7 @@ sealed interface DrawMode {
 }
 
 data class GameUiModel(
-    val gameBoard: GameBoard? = null,
+    val board: Board? = null,
     val drawn: Set<Int> = emptySet(),
     val lastDrawn: Int? = null,
     val mode: DrawMode = DrawMode.Manual,
@@ -24,7 +24,7 @@ data class GameUiModel(
 )
 
 sealed interface GameAction {
-    data class Start(val gameBoard: GameBoard, val mode: DrawMode) : GameAction
+    data class Start(val board: Board, val mode: DrawMode) : GameAction
     data object Pause : GameAction
     data object Resume : GameAction
     data object Reset : GameAction
@@ -35,9 +35,9 @@ sealed interface GameAction {
 fun reduce(state: GameUiModel, action: GameAction, patterns: List<WinPattern>): GameUiModel =
     when (action) {
         is GameAction.Start -> {
-            val wins = checkWins(action.gameBoard, emptySet(), patterns)
+            val wins = checkWins(action.board, emptySet(), patterns)
             state.copy(
-                gameBoard = action.gameBoard,
+                board = action.board,
                 drawn = emptySet(),
                 lastDrawn = null,
                 mode = action.mode,
@@ -50,7 +50,7 @@ fun reduce(state: GameUiModel, action: GameAction, patterns: List<WinPattern>): 
         GameAction.Pause -> state.copy(isRunning = false)
         GameAction.Resume -> state.copy(isRunning = state.mode is DrawMode.Auto)
         GameAction.Reset -> {
-            val b = state.gameBoard
+            val b = state.board
             state.copy(
                 drawn = emptySet(),
                 lastDrawn = null,
@@ -61,7 +61,7 @@ fun reduce(state: GameUiModel, action: GameAction, patterns: List<WinPattern>): 
         }
 
         is GameAction.DrawOne -> {
-            val b = state.gameBoard ?: return state
+            val b = state.board ?: return state
             val n = action.number.coerceIn(BINGO_MIN_NUMBER, BINGO_MAX_NUMBER)
             val next = if (n in state.drawn) state.drawn else state.drawn + n
             val wins = checkWins(b, next, patterns)

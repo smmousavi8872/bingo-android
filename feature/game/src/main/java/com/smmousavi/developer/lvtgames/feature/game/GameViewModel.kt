@@ -6,8 +6,8 @@ import com.smmousavi.developer.lvtgames.core.model.domain.game.BINGO_MIN_NUMBER
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smmousavi.developer.lvtgames.core.model.domain.game.GameBoard
-import com.smmousavi.developer.lvtgames.domain.game.usecase.GameBoardUseCase
+import com.smmousavi.developer.lvtgames.core.model.domain.game.Board
+import com.smmousavi.developer.lvtgames.domain.game.usecase.BoardUseCase
 import com.smmousavi.developer.lvtgames.feature.game.uimodel.DrawMode
 import com.smmousavi.developer.lvtgames.feature.game.uimodel.GameAction
 import com.smmousavi.developer.lvtgames.feature.game.uimodel.GameUiModel
@@ -20,16 +20,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class GameViewModel(private val useCase: GameBoardUseCase) : ViewModel() {
+class GameViewModel(private val useCase: BoardUseCase) : ViewModel() {
 
     private val _state = MutableStateFlow(GameUiModel())
     val state: StateFlow<GameUiModel> = _state
     private var autoJob: Job? = null
     private val rng = Random(System.currentTimeMillis())
 
-    fun start(gameBoard: GameBoard, mode: DrawMode = DrawMode.Manual) {
+    fun start(board: Board, mode: DrawMode = DrawMode.Manual) {
         stopAuto()
-        _state.update { s -> reduce(s, GameAction.Start(gameBoard, mode), useCase.patterns) }
+        _state.update { s -> reduce(s, GameAction.Start(board, mode), useCase.patterns) }
         if (mode is DrawMode.Auto) startAuto(mode.intervalMillis)
     }
 

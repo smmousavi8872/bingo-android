@@ -13,7 +13,7 @@ fun CardsModel.Card.toUiModel(): CardUiModel {
         name = name,
         board = matrix.toBoard(
             prizes = prizes.map { it.toPrizeUi() },
-            colors = colors.toPieceColors()
+            colors = colors.toCellColors()
         ),
         bet = bet,
         colors = CardColors(
@@ -27,27 +27,27 @@ fun CardsModel.Card.toUiModel(): CardUiModel {
     )
 }
 
-private fun CardsModel.CardColors.toPieceColors(): PieceColors {
-    return PieceColors(
-        background = background.toColorOr(default = PieceColors.DEFAULT.background),
-        textOnValue = textColor.toColorOr(default = PieceColors.DEFAULT.textOnValue),
-        textOnPrize = textColor.toColorOr(default = PieceColors.DEFAULT.textOnPrize),
-        prizeOuterRing = borderColor.toColorOr(default = PieceColors.DEFAULT.prizeOuterRing),
-        prizeInnerRing = background.toColorOr(default = PieceColors.DEFAULT.prizeInnerRing),
-        prizeInnerFill = background.toColorOr(default = PieceColors.DEFAULT.prizeInnerRing)
+private fun CardsModel.CardColors.toCellColors(): CellColors {
+    return CellColors(
+        background = background.toColorOr(default = CellColors.DEFAULT.background),
+        textOnValue = textColor.toColorOr(default = CellColors.DEFAULT.textOnValue),
+        textOnPrize = textColor.toColorOr(default = CellColors.DEFAULT.textOnPrize),
+        prizeOuterRing = borderColor.toColorOr(default = CellColors.DEFAULT.prizeOuterRing),
+        prizeInnerRing = background.toColorOr(default = CellColors.DEFAULT.prizeInnerRing),
+        prizeInnerFill = background.toColorOr(default = CellColors.DEFAULT.prizeInnerRing)
             .copy(alpha = 0.25f),
-        highlightOverlay = PieceColors.DEFAULT.highlightOverlay,
-        selectedOverlay = PieceColors.DEFAULT.selectedOverlay
+        highlightOverlay = CellColors.DEFAULT.highlightOverlay,
+        selectedOverlay = CellColors.DEFAULT.selectedOverlay
     )
 }
 
 fun List<List<Int>>.toBoard(
     prizes: List<PrizeUiModel>,
-    colors: PieceColors,
-): List<List<PieceUiModel>> {
+    colors: CellColors,
+): List<List<CellUiModel>> {
     return this.mapIndexed { rowIndex, row ->
         row.mapIndexed { colIndex, value ->
-            PieceUiModel(
+            CellUiModel(
                 position = rowIndex to colIndex,
                 value = value,
                 prize = prizes.find { it.number == value },

@@ -5,16 +5,12 @@ import kotlin.Int
 
 data class CardsUiModel(
     val cards: List<CardUiModel>,
-) {
-    companion object {
-        val DEFAULT = listOf(CardUiModel)
-    }
-}
+)
 
 data class CardUiModel(
     val id: Int,
     val name: String,
-    val board: List<List<PieceUiModel>>,
+    val board: List<List<CellUiModel>>,
     val bet: Int,
     val colors: CardColors,
 ) {
@@ -47,30 +43,30 @@ data class PrizeUiModel(
     }
 }
 
-data class PieceUiModel(
+data class CellUiModel(
     val position: Pair<Int, Int>,
     val value: Int,
     val prize: PrizeUiModel?,
-    val colors: PieceColors,
+    val colors: CellColors,
 ) {
     companion object {
-        val DEFAULT_VALUE = PieceUiModel(
+        val DEFAULT_VALUE = CellUiModel(
             position = 0 to 0,
             value = 73,
             prize = null,
-            colors = PieceColors.DEFAULT
+            colors = CellColors.DEFAULT
         )
-        val DEFAULT_EMPTY = PieceUiModel(
+        val DEFAULT_EMPTY = CellUiModel(
             position = 0 to 0,
             value = -1,
             prize = null,
-            colors = PieceColors.DEFAULT
+            colors = CellColors.DEFAULT
         )
-        val DEFAULT_PRIZE = PieceUiModel(
+        val DEFAULT_PRIZE = CellUiModel(
             position = 0 to 0,
             value = 32,
             prize = PrizeUiModel.DEFAULT,
-            colors = PieceColors.DEFAULT
+            colors = CellColors.DEFAULT
         )
     }
 }
@@ -95,7 +91,7 @@ data class CardColors(
     }
 }
 
-data class PieceColors(
+data class CellColors(
     val background: Color,
     val textOnValue: Color,
     val textOnPrize: Color,
@@ -106,7 +102,7 @@ data class PieceColors(
     val selectedOverlay: Color? = null,
 ) {
     companion object {
-        val DEFAULT = PieceColors(
+        val DEFAULT = CellColors(
             background = Color(0xff54c62f),
             textOnValue = Color(0xff3d7b31),
             textOnPrize = Color(0xFF428C35),
@@ -119,38 +115,38 @@ data class PieceColors(
     }
 }
 
-private fun defaultBoard(): List<List<PieceUiModel>> = listOf(
+private fun defaultBoard(): List<List<CellUiModel>> = listOf(
     listOf(
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
     ),
     listOf(
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_PRIZE,
     ),
     listOf(
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_PRIZE,
-        PieceUiModel.DEFAULT_EMPTY,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_VALUE,
-        PieceUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_PRIZE,
+        CellUiModel.DEFAULT_EMPTY,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_VALUE,
+        CellUiModel.DEFAULT_EMPTY,
     )
 )

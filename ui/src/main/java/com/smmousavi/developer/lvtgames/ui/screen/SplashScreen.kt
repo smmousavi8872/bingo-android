@@ -17,7 +17,6 @@ fun SplashScreen(viewModel: CardsViewModel = koinViewModel()) {
         delay(1000) // just to make sure is displayed
         viewModel.observeCards()
     }
-
     Surface {
         when (val cardsState = state.value) {
             is UiState.Loading -> LoadingScreen()

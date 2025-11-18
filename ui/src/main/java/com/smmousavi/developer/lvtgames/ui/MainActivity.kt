@@ -16,6 +16,7 @@ class MainActivity : ComponentActivity() {
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
+        // force the MainActivity orientation to Landscape
         WindowCompat.setDecorFitsSystemWindows(window, false)
         controller.hide(WindowInsetsCompat.Type.systemBars())
         controller.systemBarsBehavior =

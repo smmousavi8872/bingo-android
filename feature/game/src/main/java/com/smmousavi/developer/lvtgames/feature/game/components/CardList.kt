@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.smmousavi.developer.lvtgames.feature.cards.components.GameCard
+import com.smmousavi.developer.lvtgames.feature.cards.components.Card
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
 import com.smmousavi.developer.lvtgames.core.designsystem.R
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeContainer
@@ -24,13 +25,13 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.re
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun GameCardList(
+fun CardList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    listState: LazyListState = rememberLazyListState(),
     cards: List<CardUiModel>,
-    onCardClick: (CardUiModel) -> Unit = {},
+    onCardClick: (CardUiModel, Int) -> Unit,
 ) {
-    val listState = rememberLazyListState()
     val edgeFadeState = rememberEdgeFadeState(listState)
 
     ProvideEdgeFadeSpec(
@@ -56,10 +57,9 @@ fun GameCardList(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(
+                itemsIndexed(
                     items = cards,
-                    key = { it.id }
-                ) { model ->
+                ) { index, model ->
                     BoxWithConstraints(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -67,15 +67,14 @@ fun GameCardList(
                         // scale logo by card width
                         val logoSize = maxWidth * 0.20f // 20% of card width
                         val logoOverlap = logoSize * 0.24f // overlap upward by 26% of logo size
-
-                        GameCard(
+                        Card(
                             cardModel = model,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.Center),
-                            onClickPiece = { onCardClick(model) }
+                            onClickCard = { onCardClick(model, index) },
+                            onClickCell = { }
                         )
-
                         // logo overlay on top center
                         Image(
                             painter = painterResource(id = R.drawable.logo),
@@ -95,7 +94,7 @@ fun GameCardList(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewGameCardList() {
+fun PreviewCardList() {
     val mockCards = listOf(
         CardUiModel.DEFAULT,
         CardUiModel.DEFAULT.copy(
@@ -120,10 +119,11 @@ fun PreviewGameCardList() {
         )
     )
 
-    GameCardList(
+    CardList(
         cards = mockCards,
-        onCardClick = { selected ->
-            println("Clicked card: ${selected.name}")
+        listState = rememberLazyListState(),
+        onCardClick = { selected, index ->
+            println("Clicked card: ${selected.name}, index = $index")
         }
     )
 }

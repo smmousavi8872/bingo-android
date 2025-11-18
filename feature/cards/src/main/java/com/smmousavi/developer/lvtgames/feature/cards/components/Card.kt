@@ -4,6 +4,7 @@ package com.smmousavi.developer.lvtgames.feature.cards.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -33,36 +34,37 @@ import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PieceUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
 import kotlin.math.floor
 import kotlin.math.max
 
 /**
- * Visual style for a piece.
+ * Visual style for a [Cell].
  * - Square: a simple rounded square cell, used for the board grid.
  * - Token: a circular badge with concentric rings used to show marked numbers.
  */
-enum class PieceStyle { Empty, Prize, Value }
+enum class CellStyle { Empty, Prize, Value }
 
 /**
- * State of a piece for coloring/decoration logic.
+ * State of a [Cell] for coloring/decoration logic.
  */
-enum class PieceState { Normal, Highlighted, Selected, Disabled }
+enum class CellState { Normal, Highlighted, Selected, Disabled }
 
 /**
- * A single Bingo Card used inside the **GameBoard** and **GameCardList**.
+ * A single Bingo Card used inside the **Board** and **CardList**.
  *
  * - Outer rounded panel with gradient.
  * - Inner rounded panel (slightly inset) with the same gradient (softened by alpha).
  * - Top-centered game icon overlapping the top edge (negative Y offset).
- * - Grid is built from the card's matrix; each cell is a [CardPiece].
+ * - Grid is built from the card's matrix; each cell is a [Cell].
  */
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun GameCard(
+fun Card(
     modifier: Modifier = Modifier,
     cardModel: CardUiModel,
-    onClickPiece: (PieceUiModel) -> Unit,
+    onClickCard: () -> Unit,
+    onClickCell: (CellUiModel) -> Unit,
 ) {
     val cardBrush = rememberHorizontalBrush(
         start = cardModel.colors.startGradient,
@@ -74,7 +76,7 @@ fun GameCard(
     // Outer rounded layer
     BoxWithConstraints(
         modifier = modifier
-            .padding(4.dp)
+            .padding(vertical = 8.dp, horizontal = 4.dp)
             .background(
                 brush = cardBrush,
                 shape = RoundedCornerShape(8.dp) // will keep, border scales below
@@ -88,7 +90,7 @@ fun GameCard(
         // compute responsive scale
         val rows = cardModel.board.size
         val cols = cardModel.board.firstOrNull()?.size ?: 0
-        val scale = rememberCardScaleState(
+        val scale = rememberCardState(
             rows = rows,
             cols = cols,
             maxW = maxWidth,
@@ -106,6 +108,7 @@ fun GameCard(
                     color = cardModel.colors.background.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(8.dp)
                 )
+                .clickable { onClickCard() }
         ) {
             // Rebuild the header row here with scaled fonts/borders
             Column(
@@ -222,12 +225,12 @@ fun GameCard(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 val row = cardModel.board[i]
                                 repeat(colsCount) { j ->
-                                    val pieceUiModel = row[j]
-                                    CardPiece(
-                                        pieceModel = pieceUiModel,
+                                    val cellUiModel = row[j]
+                                    Cell(
+                                        cellModel = cellUiModel,
                                         cellSize = cellSize,
-                                        style = getPieceStyle(pieceUiModel),
-                                        onClickPiece = { onClickPiece(pieceUiModel) }
+                                        style = getStyle(cellUiModel),
+                                        onClickCell = { onClickCell(cellUiModel) }
                                     )
                                 }
                             }
@@ -267,22 +270,23 @@ fun rememberHorizontalBrush(
     )
 }
 
-private fun getPieceStyle(pieceUiModel: PieceUiModel) = if (pieceUiModel.prize == null) {
-    if (pieceUiModel.value >= 0) {
-        PieceStyle.Value
+private fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
+    if (cellUiModel.value >= 0) {
+        CellStyle.Value
     } else {
-        PieceStyle.Empty
+        CellStyle.Empty
     }
 } else {
-    PieceStyle.Prize
+    CellStyle.Prize
 }
 
 @Composable
 @Preview(showBackground = true)
 fun CardPreviewSample() {
-    GameCard(
+    Card(
         cardModel = CardUiModel.DEFAULT,
-        onClickPiece = {}
+        onClickCard = { },
+        onClickCell = { }
     )
 }
 

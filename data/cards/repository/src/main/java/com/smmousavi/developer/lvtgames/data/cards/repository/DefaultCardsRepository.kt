@@ -45,7 +45,7 @@ class DefaultCardsRepository(
                     .mapCatching { it.asDomainModel() }
             }
 
-            // Emit the result success or failur
+            // Emit the result success or failure
             emit(result)
 
             // In case of success upsert the database

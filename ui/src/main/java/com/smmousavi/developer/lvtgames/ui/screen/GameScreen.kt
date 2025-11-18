@@ -31,7 +31,7 @@ import com.smmousavi.developer.lvtgames.core.designsystem.R
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.game.components.GameBoard
+import com.smmousavi.developer.lvtgames.feature.game.components.Board
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -115,7 +115,7 @@ fun GameScreen(
                 }
             }
 
-            GameBoard(
+            Board(
                 cards = cards,
 //        selectedCard = selectedCard,
             )
