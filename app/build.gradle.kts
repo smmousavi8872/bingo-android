@@ -25,7 +25,11 @@ android {
             value = "\"https://cards.koyeb.app/\""
         )
         // Database table name
-        buildConfigField(type = "String", name = "BINGO_DB_NAME", value = "\"Bingo.db\"")
+        buildConfigField(
+            type = "String",
+            name = "BINGO_DB_NAME",
+            value = "\"Bingo.db\""
+        )
     }
 
     buildTypes {
@@ -52,12 +56,11 @@ android {
 dependencies {
     implementation(projects.core.network)
     implementation(projects.core.database)
-    implementation(projects.data.cards.datasource)
-    implementation(projects.data.cards.repository)
-    implementation(projects.domain.cards.usecase)
-    implementation(projects.feature.cards)
-    implementation(projects.domain.game.usecase)
-    implementation(projects.feature.game)
+    implementation(projects.data.card.datasource)
+    implementation(projects.data.card.repository)
+    implementation(projects.domain.card.usecase)
+    implementation(projects.feature.card)
+    implementation(projects.feature.board)
     implementation(projects.ui)
 
     implementation(libs.bundles.androidx.core)

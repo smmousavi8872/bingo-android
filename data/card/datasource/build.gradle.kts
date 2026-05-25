@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.smmousavi.developer.lvtgames.domain.game.usecase"
+    namespace = "com.smmousavi.developer.lvtgames.data.card.datasource"
     compileSdk {
         version = release(36)
     }
@@ -35,10 +36,12 @@ android {
 }
 
 dependencies {
-    api(projects.core.model)
+    implementation(projects.core.database)
+    implementation(projects.core.network)
 
     implementation(libs.bundles.di.koin)
 
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
