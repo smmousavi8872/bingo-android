@@ -34,9 +34,9 @@ import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingBu
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
 import com.smmousavi.developer.lvtgames.feature.cards.CardsViewModel
 import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.newPrize
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardsListUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CellUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.newPrize
 import com.smmousavi.developer.lvtgames.feature.game.components.Board
 import org.koin.androidx.compose.koinViewModel
 
@@ -70,17 +70,18 @@ fun ErrorScreen(message: String) {
         )
     }
 }
+
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    cards: CardsListUiModel,
+    cards: CardsListUiState,
     viewModel: CardsViewModel = koinViewModel(),
 ) {
     val backgroundPainter = painterResource(id = R.drawable.background)
     val medalPainter = painterResource(id = R.drawable.ic_bingo_medal)
     val chatPainter = painterResource(id = R.drawable.ic_bingo_chat)
 
-    val onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit =
+    val onCellClicked: (cardId: Int, cellModel: CellUiState, style: CellStyle) -> Unit =
         remember(viewModel) {
             { cardId, cellModel, style ->
                 when (style) {

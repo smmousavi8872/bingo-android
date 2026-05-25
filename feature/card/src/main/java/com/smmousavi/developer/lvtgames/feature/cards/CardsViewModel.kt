@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smmousavi.developer.lvtgames.core.designsystem.UiState
 import com.smmousavi.developer.lvtgames.domain.cards.usecase.CardsUseCase
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.PrizeUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asDomainPrize
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.asUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.withPrize
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.withoutPrize
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardsListUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.PrizeUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.asDomainPrize
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.asUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.withPrize
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.withoutPrize
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +19,8 @@ class CardsViewModel(
     private val useCase: CardsUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<UiState<CardsListUiModel>>(UiState.Loading)
-    val state: StateFlow<UiState<CardsListUiModel>> = _state.asStateFlow()
+    private val _state = MutableStateFlow<UiState<CardsListUiState>>(UiState.Loading)
+    val state: StateFlow<UiState<CardsListUiState>> = _state.asStateFlow()
 
     fun observeCards() {
         viewModelScope.launch {
@@ -41,7 +41,7 @@ class CardsViewModel(
      * Optimistic UI update + persist through use case.
      * First update the current UiState, then trigger domain update.
      */
-    fun addCardPrize(prize: PrizeUiModel) {
+    fun addCardPrize(prize: PrizeUiState) {
         // Optimistic UI update
         updateUi { it.withPrize(prize) }
 
@@ -61,7 +61,7 @@ class CardsViewModel(
         }
     }
 
-    private inline fun updateUi(transform: (CardsListUiModel) -> CardsListUiModel) {
+    private inline fun updateUi(transform: (CardsListUiState) -> CardsListUiState) {
         val current = _state.value
         if (current is UiState.Success) {
             _state.value = UiState.Success(transform(current.data))

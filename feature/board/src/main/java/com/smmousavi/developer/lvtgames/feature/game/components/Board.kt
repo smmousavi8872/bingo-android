@@ -12,15 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardsListUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CellUiState
 import kotlinx.coroutines.launch
 
 @Composable
 fun Board(
     modifier: Modifier = Modifier,
-    cardsModel: CardsListUiModel,
-    onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
+    cardsModel: CardsListUiState,
+    onCellClicked: (cardId: Int, cellModel: CellUiState, style: CellStyle) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val mainListState = rememberLazyListState()

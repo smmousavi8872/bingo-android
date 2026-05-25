@@ -1,20 +1,20 @@
-package com.smmousavi.developer.lvtgames.feature.cards.uimodel
+package com.smmousavi.developer.lvtgames.feature.cards.uistate
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import kotlin.random.Random
 
-fun CardsModel.asUiModel(): CardsListUiModel =
-    CardsListUiModel(
+fun CardsModel.asUiModel(): CardsListUiState =
+    CardsListUiState(
         cards = cards.map { it.asUiModel() }
     )
 
-fun CardsModel.Card.asUiModel(): CardUiModel {
-    val cellColors: CellUiColors = colors.asCellColors()
-    val prizeUiList: List<PrizeUiModel> = prizes.map { it.asPrizeUi() }
+fun CardsModel.Card.asUiModel(): CardUiState {
+    val cellColors: CellColorsUiState = colors.asCellColors()
+    val prizeUiList: List<PrizeUiState> = prizes.map { it.asPrizeUi() }
 
-    return CardUiModel(
+    return CardUiState(
         id = id,
         name = name,
         board = matrix.asBoard(
@@ -22,44 +22,44 @@ fun CardsModel.Card.asUiModel(): CardUiModel {
             colors = cellColors
         ),
         bet = bet,
-        colors = CardUiColors(
+        colors = CardColorsUiState(
             background = colors.background.asColorOr(default = Color.White),
-            startGradient = colors.backgroundGradient1.asColorOr(default = CardUiColors.DEFAULT.startGradient),
-            midGradient = colors.backgroundGradient2.asColorOr(default = CardUiColors.DEFAULT.midGradient),
-            endGradient = colors.backgroundGradient3.asColorOr(default = CardUiColors.DEFAULT.endGradient),
+            startGradient = colors.backgroundGradient1.asColorOr(default = CardColorsUiState.DEFAULT.startGradient),
+            midGradient = colors.backgroundGradient2.asColorOr(default = CardColorsUiState.DEFAULT.midGradient),
+            endGradient = colors.backgroundGradient3.asColorOr(default = CardColorsUiState.DEFAULT.endGradient),
             titleColor = colors.titleColor.asColorOr(default = Color.White),
-            borderColor = colors.borderColor.asColorOr(CardUiColors.DEFAULT.borderColor)
+            borderColor = colors.borderColor.asColorOr(CardColorsUiState.DEFAULT.borderColor)
         )
     )
 }
 
-private fun CardsModel.CardColors.asCellColors(): CellUiColors {
-    val backgroundColor = background.asColorOr(default = CellUiColors.DEFAULT.background)
-    val textColor = textColor.asColorOr(default = CellUiColors.DEFAULT.textOnValue)
-    val borderColor = borderColor.asColorOr(default = CellUiColors.DEFAULT.prizeOuterRing)
+private fun CardsModel.CardColors.asCellColors(): CellColorsUiState {
+    val backgroundColor = background.asColorOr(default = CellColorsUiState.DEFAULT.background)
+    val textColor = textColor.asColorOr(default = CellColorsUiState.DEFAULT.textOnValue)
+    val borderColor = borderColor.asColorOr(default = CellColorsUiState.DEFAULT.prizeOuterRing)
 
-    return CellUiColors(
+    return CellColorsUiState(
         background = backgroundColor,
         textOnValue = textColor,
         textOnPrize = textColor,
         prizeOuterRing = borderColor,
         prizeInnerRing = backgroundColor,
         prizeInnerFill = backgroundColor.copy(alpha = 0.25f),
-        highlightOverlay = CellUiColors.DEFAULT.highlightOverlay,
-        selectedOverlay = CellUiColors.DEFAULT.selectedOverlay
+        highlightOverlay = CellColorsUiState.DEFAULT.highlightOverlay,
+        selectedOverlay = CellColorsUiState.DEFAULT.selectedOverlay
     )
 }
 
 fun List<List<Int>>.asBoard(
-    prizes: List<PrizeUiModel>,
-    colors: CellUiColors,
-): List<List<CellUiModel>> {
+    prizes: List<PrizeUiState>,
+    colors: CellColorsUiState,
+): List<List<CellUiState>> {
     // Build a lookup table once per board
-    val prizeByNumber: Map<Int?, PrizeUiModel> = prizes.associateBy { it.number }
+    val prizeByNumber: Map<Int?, PrizeUiState> = prizes.associateBy { it.number }
 
     return mapIndexed { rowIndex, row ->
         row.mapIndexed { colIndex, value ->
-            CellUiModel(
+            CellUiState(
                 position = rowIndex to colIndex,
                 value = value,
                 prize = prizeByNumber[value],
@@ -69,12 +69,12 @@ fun List<List<Int>>.asBoard(
     }
 }
 
-fun CardsListUiModel.asDomainModel(): CardsModel =
+fun CardsListUiState.asDomainModel(): CardsModel =
     CardsModel(
         cards = cards.map { it.asDomainModel() }
     )
 
-private fun CardsModel.Prize.asPrizeUi() = PrizeUiModel(
+private fun CardsModel.Prize.asPrizeUi() = PrizeUiState(
     id = id,
     cardId = cardId,
     title = title,
@@ -83,7 +83,7 @@ private fun CardsModel.Prize.asPrizeUi() = PrizeUiModel(
     number = number
 )
 
-fun CardUiModel.asDomainModel(): CardsModel.Card {
+fun CardUiState.asDomainModel(): CardsModel.Card {
     return CardsModel.Card(
         id = id,
         name = name,
@@ -94,14 +94,14 @@ fun CardUiModel.asDomainModel(): CardsModel.Card {
     )
 }
 
-fun List<List<CellUiModel>>.collectPrizes(): List<CardsModel.Prize> {
+fun List<List<CellUiState>>.collectPrizes(): List<CardsModel.Prize> {
     return flatMap { it }
         .mapNotNull { it.prize }
         .distinctBy { it.id }
         .map { it.asDomainPrize() }
 }
 
-fun PrizeUiModel.asDomainPrize(): CardsModel.Prize =
+fun PrizeUiState.asDomainPrize(): CardsModel.Prize =
     CardsModel.Prize(
         id = id,
         cardId = cardId,
@@ -111,8 +111,8 @@ fun PrizeUiModel.asDomainPrize(): CardsModel.Prize =
         number = number ?: -1           // or throw if you want it strictly non-null
     )
 
-fun CardUiColors.asDomainCardColors(
-    board: List<List<CellUiModel>>,
+fun CardColorsUiState.asDomainCardColors(
+    board: List<List<CellUiState>>,
 ): CardsModel.CardColors {
     // Try to use the first cell's textOnValue as the original textColor
     val sampleTextColor: Color? = board
@@ -134,7 +134,7 @@ fun CardUiColors.asDomainCardColors(
 }
 
 fun newPrize(cardId: Int, number: Int) =
-    PrizeUiModel(
+    PrizeUiState(
         id = Random.nextInt(0, 100),
         cardId = cardId,
         title = "First Five",
@@ -144,14 +144,14 @@ fun newPrize(cardId: Int, number: Int) =
     )
 
 
-fun CardsListUiModel.withPrize(prize: PrizeUiModel): CardsListUiModel =
+fun CardsListUiState.withPrize(prize: PrizeUiState): CardsListUiState =
     copy(
         cards = cards.map { card ->
             if (card.id != prize.cardId) card else card.withPrize(prize)
         }
     )
 
-fun CardUiModel.withPrize(prize: PrizeUiModel): CardUiModel =
+fun CardUiState.withPrize(prize: PrizeUiState): CardUiState =
     copy(
         board = board.map { row ->
             row.map { cell ->
@@ -164,14 +164,14 @@ fun CardUiModel.withPrize(prize: PrizeUiModel): CardUiModel =
         }
     )
 
-fun CardsListUiModel.withoutPrize(cardId: Int, prizeId: Int): CardsListUiModel =
+fun CardsListUiState.withoutPrize(cardId: Int, prizeId: Int): CardsListUiState =
     copy(
         cards = cards.map { card ->
             if (card.id != cardId) card else card.withoutPrize(prizeId)
         }
     )
 
-fun CardUiModel.withoutPrize(prizeId: Int): CardUiModel =
+fun CardUiState.withoutPrize(prizeId: Int): CardUiState =
     copy(
         board = board.map { row ->
             row.map { cell ->
@@ -191,7 +191,7 @@ private fun Color.toHex(): String =
         (blue * 255).toInt()
     )
 
-private fun List<List<CellUiModel>>.asMatrix(): List<List<Int>> =
+private fun List<List<CellUiState>>.asMatrix(): List<List<Int>> =
     map { row ->
         row.map { cell -> cell.value }
     }

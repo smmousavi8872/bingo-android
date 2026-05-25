@@ -1,35 +1,35 @@
-package com.smmousavi.developer.lvtgames.feature.cards.uimodel
+package com.smmousavi.developer.lvtgames.feature.cards.uistate
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import kotlin.Int
 
 @Immutable
-data class CardsListUiModel(
-    val cards: List<CardUiModel>,
+data class CardsListUiState(
+    val cards: List<CardUiState>,
 )
 
 @Immutable
-data class CardUiModel(
+data class CardUiState(
     val id: Int,
     val name: String,
-    val board: List<List<CellUiModel>>,
+    val board: List<List<CellUiState>>,
     val bet: Int,
-    val colors: CardUiColors,
+    val colors: CardColorsUiState,
 ) {
     companion object {
-        val DEFAULT = CardUiModel(
+        val DEFAULT = CardUiState(
             id = 1,
             name = "Card 1",
             board = defaultBoard(),
             bet = 2100,
-            colors = CardUiColors.DEFAULT
+            colors = CardColorsUiState.DEFAULT
         )
     }
 }
 
 @Immutable
-data class PrizeUiModel(
+data class PrizeUiState(
     val id: Int,
     val cardId: Int,
     val title: String,
@@ -38,7 +38,7 @@ data class PrizeUiModel(
     val number: Int?,
 ) {
     companion object {
-        val DEFAULT = PrizeUiModel(
+        val DEFAULT = PrizeUiState(
             id = 1,
             cardId = 1,
             title = "First Five",
@@ -50,36 +50,36 @@ data class PrizeUiModel(
 }
 
 @Immutable
-data class CellUiModel(
+data class CellUiState(
     val position: Pair<Int, Int>,
     val value: Int,
-    val prize: PrizeUiModel?,
-    val colors: CellUiColors,
+    val prize: PrizeUiState?,
+    val colors: CellColorsUiState,
 ) {
     companion object {
-        val DEFAULT_VALUE = CellUiModel(
+        val DEFAULT_VALUE = CellUiState(
             position = 0 to 0,
             value = 73,
             prize = null,
-            colors = CellUiColors.DEFAULT
+            colors = CellColorsUiState.DEFAULT
         )
-        val DEFAULT_EMPTY = CellUiModel(
+        val DEFAULT_EMPTY = CellUiState(
             position = 0 to 0,
             value = -1,
             prize = null,
-            colors = CellUiColors.DEFAULT
+            colors = CellColorsUiState.DEFAULT
         )
-        val DEFAULT_PRIZE = CellUiModel(
+        val DEFAULT_PRIZE = CellUiState(
             position = 0 to 0,
             value = 32,
-            prize = PrizeUiModel.DEFAULT,
-            colors = CellUiColors.DEFAULT
+            prize = PrizeUiState.DEFAULT,
+            colors = CellColorsUiState.DEFAULT
         )
     }
 }
 
 @Immutable
-data class CardUiColors(
+data class CardColorsUiState(
     val background: Color,
     val startGradient: Color,
     val midGradient: Color,
@@ -88,7 +88,7 @@ data class CardUiColors(
     val borderColor: Color,
 ) {
     companion object {
-        val DEFAULT = CardUiColors(
+        val DEFAULT = CardColorsUiState(
             background = Color(0xff54c62f),
             startGradient = Color(0xff2f8201),
             midGradient = Color(0xff54c62f),
@@ -100,7 +100,7 @@ data class CardUiColors(
 }
 
 @Immutable
-data class CellUiColors(
+data class CellColorsUiState(
     val background: Color,
     val textOnValue: Color,
     val textOnPrize: Color,
@@ -111,7 +111,7 @@ data class CellUiColors(
     val selectedOverlay: Color? = null,
 ) {
     companion object {
-        val DEFAULT = CellUiColors(
+        val DEFAULT = CellColorsUiState(
             background = Color(0xff54c62f),
             textOnValue = Color(0xff3d7b31),
             textOnPrize = Color(0xFF428C35),
@@ -124,38 +124,38 @@ data class CellUiColors(
     }
 }
 
-private fun defaultBoard(): List<List<CellUiModel>> = listOf(
+private fun defaultBoard(): List<List<CellUiState>> = listOf(
     listOf(
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
     ),
     listOf(
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_PRIZE,
     ),
     listOf(
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_PRIZE,
-        CellUiModel.DEFAULT_EMPTY,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_VALUE,
-        CellUiModel.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_PRIZE,
+        CellUiState.DEFAULT_EMPTY,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_VALUE,
+        CellUiState.DEFAULT_EMPTY,
     )
 )

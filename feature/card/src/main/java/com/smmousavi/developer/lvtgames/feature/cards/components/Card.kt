@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.BookmarkBadge
 import com.smmousavi.developer.lvtgames.core.designsystem.components.StylousText
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CellUiState
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -48,10 +48,10 @@ import kotlin.math.max
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    cardModel: CardUiModel,
+    cardModel: CardUiState,
     isPreview: Boolean,
     onCardClicked: () -> Unit,
-    onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
+    onCellClicked: (cardId: Int, cellModel: CellUiState, style: CellStyle) -> Unit,
 ) {
     // Horizontal gradient is static for a given card → remember it
     val cardBrush = rememberHorizontalBrush(
@@ -282,7 +282,7 @@ fun rememberHorizontalBrush(
 @Preview(showBackground = true)
 fun CardPreviewSample() {
     Card(
-        cardModel = CardUiModel.DEFAULT,
+        cardModel = CardUiState.DEFAULT,
         isPreview = false,
         onCardClicked = { },
         onCellClicked = { _, _, _ -> }

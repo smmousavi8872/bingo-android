@@ -16,15 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smmousavi.developer.lvtgames.feature.cards.components.Card
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardUiState
 import com.smmousavi.developer.lvtgames.core.designsystem.R
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeContainer
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.EdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.ProvideEdgeFadeSpec
 import com.smmousavi.developer.lvtgames.core.designsystem.components.edgefade.rememberEdgeFadeState
 import com.smmousavi.developer.lvtgames.feature.cards.components.CellStyle
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CardsListUiModel
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CardsListUiState
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CellUiState
 
 @Composable
 fun CardList(
@@ -32,10 +32,10 @@ fun CardList(
     contentPadding: PaddingValues = PaddingValues(12.dp),
     itemSpace: Dp = 8.dp,
     listState: LazyListState = rememberLazyListState(),
-    cardsModel: CardsListUiModel,
+    cardsModel: CardsListUiState,
     isPreview: Boolean = false,
-    onCardClick: ((CardUiModel, Int) -> Unit),
-    onCellClicked: (cardId: Int, cellModel: CellUiModel, style: CellStyle) -> Unit,
+    onCardClick: ((CardUiState, Int) -> Unit),
+    onCellClicked: (cardId: Int, cellModel: CellUiState, style: CellStyle) -> Unit,
 ) {
     val edgeFadeState = rememberEdgeFadeState(listState)
     val logoPainter = painterResource(id = R.drawable.logo)
@@ -106,23 +106,23 @@ fun CardList(
 @Preview(showBackground = true)
 @Composable
 fun PreviewCardList() {
-    val mockCards = CardsListUiModel(
+    val mockCards = CardsListUiState(
         cards = listOf(
-            CardUiModel.DEFAULT,
-            CardUiModel.DEFAULT.copy(
+            CardUiState.DEFAULT,
+            CardUiState.DEFAULT.copy(
                 id = 2,
                 name = "Card 2",
-                colors = CardUiModel.DEFAULT.colors.copy(
+                colors = CardUiState.DEFAULT.colors.copy(
                     background = Color(0xFFC345A6),
                     startGradient = Color(0xFFE939DE),
                     midGradient = Color(0xFF076D18),
                     endGradient = Color(0xFF652146)
                 )
             ),
-            CardUiModel.DEFAULT.copy(
+            CardUiState.DEFAULT.copy(
                 id = 3,
                 name = "Card 3",
-                colors = CardUiModel.DEFAULT.colors.copy(
+                colors = CardUiState.DEFAULT.colors.copy(
                     background = Color(0xFF579294),
                     startGradient = Color(0xFF4ACCB0),
                     midGradient = Color(0xFF46279A),

@@ -6,7 +6,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingButton
 import com.smmousavi.developer.lvtgames.core.designsystem.components.ring.RingSpec
-import com.smmousavi.developer.lvtgames.feature.cards.uimodel.CellUiModel
+import com.smmousavi.developer.lvtgames.feature.cards.uistate.CellUiState
 
 /**
  * Visual style for a [Cell].
@@ -61,11 +60,11 @@ enum class CellState { Normal, Highlighted, Selected, Disabled }
 @Composable
 fun Cell(
     modifier: Modifier = Modifier,
-    cellModel: CellUiModel,
+    cellModel: CellUiState,
     style: CellStyle = CellStyle.Empty,
     state: CellState = CellState.Normal,
     cellSize: Dp = 64.dp,
-    onClickCell: ((CellUiModel) -> Unit)?,
+    onClickCell: ((CellUiState) -> Unit)?,
 ) {
     val isDisabled = state == CellState.Disabled
 
@@ -175,8 +174,8 @@ fun Cell(
     }
 }
 
-fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
-    if (cellUiModel.value >= 0) {
+fun getStyle(cellUiState: CellUiState) = if (cellUiState.prize == null) {
+    if (cellUiState.value >= 0) {
         CellStyle.Value
     } else {
         CellStyle.Empty
@@ -189,7 +188,7 @@ fun getStyle(cellUiModel: CellUiModel) = if (cellUiModel.prize == null) {
 @Composable
 private fun ValueCellPreview() {
     Cell(
-        cellModel = CellUiModel.DEFAULT_VALUE,
+        cellModel = CellUiState.DEFAULT_VALUE,
         onClickCell = {}
     )
 }
@@ -198,7 +197,7 @@ private fun ValueCellPreview() {
 @Composable
 private fun PrizeCellPreview() {
     Cell(
-        cellModel = CellUiModel.DEFAULT_PRIZE,
+        cellModel = CellUiState.DEFAULT_PRIZE,
         style = CellStyle.Prize,
         onClickCell = {}
     )
@@ -208,7 +207,7 @@ private fun PrizeCellPreview() {
 @Composable
 private fun EmptyCellPreview() {
     Cell(
-        cellModel = CellUiModel.DEFAULT_EMPTY,
+        cellModel = CellUiState.DEFAULT_EMPTY,
         style = CellStyle.Empty,
         onClickCell = {}
     )
