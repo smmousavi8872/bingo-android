@@ -35,6 +35,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: CardsViewModel = koinViewModel()
             val state = viewModel.state.collectAsStateWithLifecycle(initialValue = UiState.Loading)
+
+
             LaunchedEffect(Unit) {
                 delay(1000) // just to make sure is displayed
                 viewModel.observeCards()

@@ -5,7 +5,7 @@ import com.smmousavi.developer.lvtgames.bingo.di.appModule
 import com.smmousavi.developer.lvtgames.core.database.di.databaseModule
 import com.smmousavi.developer.lvtgames.core.network.di.networkModule
 import com.smmousavi.developer.lvtgames.data.cards.datasource.di.cardsDataSourceModule
-import com.smmousavi.developer.lvtgames.data.cards.di.cardsRepositoryModule
+import com.smmousavi.developer.lvtgames.data.cards.offline.repository.di.cardsOfflineRepositoryModule
 import com.smmousavi.developer.lvtgames.domain.cards.di.cardsUseCaseModule
 import com.smmousavi.developer.lvtgames.feature.cards.di.cardsViewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -24,7 +24,7 @@ class BingoApplication : Application() {
                 databaseModule,
                 networkModule,
                 cardsDataSourceModule,
-                cardsRepositoryModule,
+                cardsOfflineRepositoryModule,
                 cardsUseCaseModule,
                 cardsViewModelModule,
             )

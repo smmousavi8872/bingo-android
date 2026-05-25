@@ -1,9 +1,9 @@
-package com.smmousavi.developer.lvtgames.data.cards.repository
+package com.smmousavi.developer.lvtgames.data.cards.offline.repository.offline
 
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import kotlinx.coroutines.flow.Flow
 
-interface CardsRepository {
+interface CardsOfflineRepository {
 
     fun observeCards(): Flow<Result<CardsModel>>
 

@@ -10,9 +10,17 @@ import com.smmousavi.developer.lvtgames.feature.cards.uistate.asDomainPrize
 import com.smmousavi.developer.lvtgames.feature.cards.uistate.asUiModel
 import com.smmousavi.developer.lvtgames.feature.cards.uistate.withPrize
 import com.smmousavi.developer.lvtgames.feature.cards.uistate.withoutPrize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 class CardsViewModel(
@@ -34,6 +42,10 @@ class CardsViewModel(
                         _state.value = UiState.Error(e.message ?: "Unknown error", e)
                     }
             }
+
+            useCase().first()
+            useCase().single()
+            useCase().launchIn(this)
         }
     }
 

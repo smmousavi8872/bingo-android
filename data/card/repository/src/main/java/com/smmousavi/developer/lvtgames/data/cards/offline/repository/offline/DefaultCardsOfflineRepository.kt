@@ -1,4 +1,4 @@
-package com.smmousavi.developer.lvtgames.data.cards.repository
+package com.smmousavi.developer.lvtgames.data.cards.offline.repository.offline
 
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.asDomainModel
@@ -16,11 +16,11 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.withContext
 
 
-class DefaultCardsRepository(
+class DefaultCardsOfflineRepository(
     private val localDataSource: CardsLocalDataSource,
     private val remoteDataSource: CardsRemoteDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : CardsRepository {
+) : CardsOfflineRepository {
 
     /**
      * DefaultCardsRepository

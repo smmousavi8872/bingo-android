@@ -1,11 +1,11 @@
 package com.smmousavi.developer.lvtgames.domain.cards.usecase
 
 import com.smmousavi.developer.lvtgames.core.model.domain.cards.CardsModel
-import com.smmousavi.developer.lvtgames.data.cards.repository.CardsRepository
+import com.smmousavi.developer.lvtgames.data.cards.offline.repository.offline.CardsOfflineRepository
 import kotlinx.coroutines.flow.Flow
 
 
-class DefaultCardsUseCase(val repository: CardsRepository) : CardsUseCase {
+class DefaultCardsUseCase(val repository: CardsOfflineRepository) : CardsUseCase {
 
     override suspend fun invoke(): Flow<Result<CardsModel>> = repository.observeCards()
 
