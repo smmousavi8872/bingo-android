@@ -19,7 +19,7 @@ class DefaultCardsLocalDataSource(
      * Observes all cached card as a stream of domain models.
      * Emits updates only when actual data content changes.
      */
-    override fun observe(): Flow<CardsModel> = dao.observeCards()
+    override fun loadCards(): Flow<CardsModel> = dao.loadCards()
         .distinctUntilChanged()
         .map { cardPrizes ->
             cardPrizes.asCardsModel(json)

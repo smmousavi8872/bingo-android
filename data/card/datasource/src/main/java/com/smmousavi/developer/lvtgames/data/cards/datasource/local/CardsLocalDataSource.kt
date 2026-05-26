@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CardsLocalDataSource {
 
-    fun observe(): Flow<CardsModel>
+    fun loadCards(): Flow<CardsModel>
 
     suspend fun upsert(snapshot: CardsModel): Result<Unit>
 

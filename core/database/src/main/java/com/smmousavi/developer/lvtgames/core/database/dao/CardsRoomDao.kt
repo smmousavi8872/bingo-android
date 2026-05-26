@@ -15,7 +15,7 @@ interface CardsRoomDao {
 
     @Transaction
     @Query("SELECT * FROM cards_table ORDER BY id ASC")
-    fun observeCards(): Flow<List<CardWithPrizesEntity>>
+    fun loadCards(): Flow<List<CardWithPrizesEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCards(cards: List<CardEntity>)

@@ -39,13 +39,9 @@ class CardsViewModel(
                         _state.value = UiState.Success(uiModel)
                     }
                     .onFailure { e ->
-                        _state.value = UiState.Error(e.message ?: "Unknown error", e)
+//                        _state.value = UiState.Error(e.message ?: "Unknown error", e)
                     }
             }
-
-            useCase().first()
-            useCase().single()
-            useCase().launchIn(this)
         }
     }
 
